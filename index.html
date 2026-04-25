@@ -34,7 +34,7 @@
         * { box-sizing: border-box; }
         body { background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 0; line-height: 1.6; overflow-x: hidden; }
         
-        .app-container { max-width: 800px; width: 100%; margin: 0 auto; padding: calc(8vh + var(--safe-area-top)) 16px 50vh 16px; }
+        .app-container { max-width: 800px; width: 100%; margin: 0 auto; padding: calc(8vh + var(--safe-area-top)) 16px 50vh 16px; cursor: text; }
         
         ::-webkit-scrollbar { display: none; }
         ::selection { background: var(--text-color) !important; color: var(--bg-color); }
@@ -50,7 +50,7 @@
         }
         #date-header:hover { color: var(--muted-text); }
         
-        .header-status-row { display: flex; align-items: center; margin: 0 0 30px 0; user-select: none; font-size: 12px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; flex-wrap: wrap; gap: 12px; }
+        .header-status-row { display: flex; align-items: center; margin: 0 0 30px 0; user-select: none; font-size: 12px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; flex-wrap: wrap; gap: 12px; cursor: default; }
         .save-indicator { color: var(--muted-text); opacity: 0; transition: opacity 0.3s; }
         .save-indicator.visible { opacity: 1; }
         .storage-warning { color: #ef4444; display: none; }
@@ -67,8 +67,8 @@
         .persona-link:hover { opacity: 0.8; }
 
         /* --- PROTRUDING BLOCK FOOTER ARCHITECTURE --- */
-        #editor-container { position: relative; width: 100%; min-height: 20vh; outline: none; display: flex; flex-direction: column; gap: 12px; }
-        .block-wrapper { position: relative; padding: 0 0 16px 0; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+        #editor-container { position: relative; width: 100%; min-height: 20vh; outline: none; display: flex; flex-direction: column; gap: 12px; cursor: default; }
+        .block-wrapper { position: relative; padding: 0 0 16px 0; border-bottom: 1px solid transparent; transition: border-color 0.2s; cursor: text; }
         .block-wrapper:hover, .block-wrapper:focus-within { border-bottom-color: var(--border-color); }
         .block-wrapper.is-readonly { cursor: pointer; border-radius: 6px; transition: background-color 0.15s, border-color 0.15s; }
         .block-wrapper.is-readonly:hover { background-color: var(--muted-bg); border-bottom-color: transparent !important; }
@@ -92,9 +92,9 @@
         .native-header-2 { font-size: 1.5em; font-weight: bold; margin-top: 0.8em; border-bottom: 2px solid var(--text-color); padding-bottom: 4px; display: inline-block; line-height: 1.2; }
         .native-header-3 { font-size: 1.2em; font-weight: bold; margin-top: 0.8em; text-decoration: underline; line-height: 1.3; }
         .native-quote { border-left: 4px solid var(--text-color); padding-left: 14px; margin: 8px 0; font-style: italic; color: var(--muted-text); background: var(--muted-bg); padding-top: 8px; padding-bottom: 8px; }
-        .native-table-wrapper { overflow-x: auto; margin: 8px 0; border: 1px solid var(--border-color); }
+        .native-table-wrapper { overflow-x: auto; margin: 8px 0; border: 1px solid var(--border-color); cursor: default; }
         .native-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        .native-table td { border: 1px solid var(--border-color); padding: 8px; min-width: 80px; outline: none; vertical-align: top; }
+        .native-table td { border: 1px solid var(--border-color); padding: 8px; min-width: 80px; outline: none; vertical-align: top; cursor: text; }
         .native-table td:focus { background: var(--muted-bg); }
         .checklist-item, .list-item-row { display: flex; align-items: flex-start; gap: 12px; margin: 8px 0; }
         .checklist-checkbox { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; border: 2px solid var(--text-color); background: transparent; cursor: pointer; margin-top: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -103,14 +103,14 @@
         .list-bullet { margin-top: 2px; font-weight: bold; font-size: 1.2em; line-height: 1; flex-shrink: 0; }
 
         /* --- WIDGET SLASH MENU SYSTEM --- */
-        .slash-menu { position: absolute; z-index: 10000; background: var(--bg-color); border: 2px solid var(--text-color); box-shadow: 4px 4px 0 var(--text-color); padding: 0; display: none; flex-direction: column; width: 280px; max-width: calc(100vw - 32px); max-height: 320px; overflow-y: auto; }
+        .slash-menu { position: absolute; z-index: 10000; background: var(--bg-color); border: 2px solid var(--text-color); box-shadow: 4px 4px 0 var(--text-color); padding: 0; display: none; flex-direction: column; width: 280px; max-width: calc(100vw - 32px); max-height: 320px; overflow-y: auto; cursor: default; }
         .slash-menu.active { display: flex; }
         .slash-item { display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border-color); font-size: 12px; font-weight: bold; text-transform: uppercase; color: var(--text-color); transition: background 0.1s, color 0.1s; }
         .slash-item:last-child { border-bottom: none; }
         .slash-item.selected, .slash-item:hover { background: var(--text-color); color: var(--bg-color); }
         
         /* --- STANDARDIZED NON-TEXT WIDGET STYLES --- */
-        .tool-box { border: 1px solid var(--border-color); background: var(--bg-color); margin: 8px 0; display: flex; flex-direction: column; overflow: hidden; }
+        .tool-box { border: 1px solid var(--border-color); background: var(--bg-color); margin: 8px 0; display: flex; flex-direction: column; overflow: hidden; cursor: default; }
         .tool-header { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border-color); background: var(--muted-bg); gap: 12px; }
         .tool-title-input { flex: 1; font-weight: bold; letter-spacing: 1px; padding: 4px; border: none; background: transparent; color: var(--text-color); font-family: inherit; font-size: 14px; outline: none; text-transform: uppercase; }
         .tool-title-input::placeholder { color: var(--muted-text); opacity: 0.5; }
@@ -127,9 +127,9 @@
         .recall-item { padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
         .recall-item:hover { background: var(--text-color); color: var(--bg-color); }
 
-        .leaflet-container { z-index: 1 !important; width: 100%; height: 400px; background: var(--bg-color) !important; touch-action: auto; }
+        .leaflet-container { z-index: 1 !important; width: 100%; height: 400px; background: var(--bg-color) !important; touch-action: auto; cursor: crosshair; }
 
-        .global-calendar-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; padding: 16px; }
+        .global-calendar-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; padding: 16px; cursor: default; }
         .global-calendar-modal.show { display: flex; opacity: 1; }
         .cp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
         .cp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border-color); border: 1px solid var(--border-color); }
@@ -141,7 +141,7 @@
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="app-container" id="app-wrapper">
         <div id="date-header"></div>
         <div class="header-status-row">
             <span id="storage-warning" class="storage-warning">LOCAL ONLY</span>
@@ -199,10 +199,15 @@
             compute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 13 8 18 8"></polyline><circle cx="20" cy="8" r="2"></circle><circle cx="2" cy="14" r="2"></circle></svg>'
         };
 
+        // FIX: Ensure event handlers (starting with 'on') are assigned as object properties, not string attributes.
         function createEl(tag, classNames = '', attributes = {}, children = []) {
             const el = document.createElement(tag); if (classNames) el.className = classNames;
             for (const [k, v] of Object.entries(attributes)) { 
-                if (k === 'innerHTML') el.innerHTML = v; else if (k === 'textContent') el.textContent = v; else if (k === 'style') el.style.cssText = v; else el.setAttribute(k, v); 
+                if (k === 'innerHTML') el.innerHTML = v; 
+                else if (k === 'textContent') el.textContent = v; 
+                else if (k === 'style') el.style.cssText = v; 
+                else if (k.startsWith('on') && typeof v === 'function') el[k] = v; // Properly binds onclick events!
+                else el.setAttribute(k, v); 
             }
             children.forEach(c => c && el.append(c)); return el;
         }
@@ -411,14 +416,12 @@
         // --- UNIFIED TEXT INTERACTION HANDLER (Autocomplete & Spacing) ---
         function handleTextInteraction(e, el, api, blockInstance) {
             if (e.type === 'input') {
-                // Space creates instant tags
                 if (e.data === ' ' || (e.inputType === 'insertText' && e.data === ' ')) {
                     api.hideTagMenu();
                     if (linkifyAndPreserveCaret(el)) api.onChange();
                     return;
                 }
 
-                // Autocomplete Menu Check
                 const sel = window.getSelection();
                 if (sel.rangeCount > 0) {
                     const node = sel.focusNode;
@@ -460,6 +463,21 @@
             if (link) { e.preventDefault(); const target = link.getAttribute('data-target'); if (target) window.loadVirtualPage(target); }
         });
 
+        // Click outside blocks to focus/create new block at the end (Universal Escapement Mechanism)
+        document.getElementById('app-wrapper').addEventListener('click', (e) => {
+            if ((e.target.id === 'app-wrapper' || e.target.id === 'editor-container') && window.editor && !window.editor.readOnly) {
+                const count = window.editor.blocks.length;
+                if (count > 0) {
+                    const lastBlock = window.editor.blocks[count - 1];
+                    if (lastBlock.type === 'paragraph' && !lastBlock.instance.el.textContent.trim()) {
+                        if (typeof lastBlock.instance.focus === 'function') lastBlock.instance.focus();
+                    } else {
+                        window.editor.insertBlock('paragraph', {}, count, true);
+                    }
+                }
+            }
+        });
+
         function moveCaretToEnd(el) { try { const range = document.createRange(); range.selectNodeContents(el); range.collapse(false); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); } catch(e) {} }
 
         // ============================================================================
@@ -476,9 +494,8 @@
                     
                     if (r.toString().length === 0) {
                         e.preventDefault();
-                        const idx = api.getIndex(blockInstance);
-                        if (e.key === 'ArrowUp' && idx > 0) api.focus(idx - 1, true);
-                        if (e.key === 'ArrowDown' && idx < api.getBlockCount() - 1) api.focus(idx + 1);
+                        if (e.key === 'ArrowUp') api.focusPrev(blockInstance);
+                        if (e.key === 'ArrowDown') api.focusNext(blockInstance);
                     }
                 }
             }
@@ -511,7 +528,7 @@
                                     prevBlock.instance.el.innerHTML = prevHtml + el.innerHTML;
                                     api.deleteBlock(idx);
                                     prevBlock.instance.focus(true); 
-                                } else api.focus(idx - 1, true);
+                                } else api.focusPrev(blockInstance);
                             } else if (blockType !== 'paragraph') {
                                 const currentHtml = el.innerHTML; api.deleteBlock(0);
                                 const newP = api.insertBlock('paragraph', {text: currentHtml}, 0, false);
@@ -536,10 +553,10 @@
                         e.preventDefault();
                         if (e.key === 'ArrowUp') {
                             if (index > 0) { const prevInput = blockInstance.wrapper.children[index - 1].querySelector('.checklist-text, .list-text'); prevInput.focus(); moveCaretToEnd(prevInput); } 
-                            else { const idx = api.getIndex(blockInstance); if (idx > 0) api.focus(idx - 1, true); }
+                            else { api.focusPrev(blockInstance); }
                         } else {
                             if (index < itemsArray.length - 1) { const nextInput = blockInstance.wrapper.children[index + 1].querySelector('.checklist-text, .list-text'); nextInput.focus(); } 
-                            else { const idx = api.getIndex(blockInstance); if (idx < api.getBlockCount() - 1) api.focus(idx + 1); }
+                            else { api.focusNext(blockInstance); }
                         }
                     }
                 }
@@ -656,9 +673,10 @@
                 this.renderRows(); this.wrapper.appendChild(this.table);
 
                 if (!this.readOnly) {
-                    this.wrapper.appendChild(createEl('div', 'table-controls', {style: 'display: flex; gap: 8px; padding: 4px;'}, [
-                        createEl('button', 'flat-btn', { textContent: '+ Row', style: 'font-size: 10px; padding: 4px 8px;', onclick: () => { this.rows.push(new Array(this.rows[0].length).fill('')); this.renderRows(); this.api.onChange(); } }),
-                        createEl('button', 'flat-btn', { textContent: '+ Col', style: 'font-size: 10px; padding: 4px 8px;', onclick: () => { this.rows.forEach(r => r.push('')); this.renderRows(); this.api.onChange(); } })
+                    this.wrapper.appendChild(createEl('div', 'table-controls', {style: 'display: flex; gap: 8px; padding: 4px; background: var(--muted-bg);'}, [
+                        createEl('button', 'flat-btn', { textContent: '+ ROW', style: 'font-size: 10px; padding: 4px 8px;', onclick: () => { this.rows.push(new Array(this.rows[0].length).fill('')); this.renderRows(); this.api.onChange(); } }),
+                        createEl('button', 'flat-btn', { textContent: '+ COL', style: 'font-size: 10px; padding: 4px 8px;', onclick: () => { this.rows.forEach(r => r.push('')); this.renderRows(); this.api.onChange(); } }),
+                        createEl('button', 'flat-btn', { textContent: 'DEL TABLE', style: 'font-size: 10px; padding: 4px 8px; margin-left: auto; color: #ef4444; border-color: transparent;', onclick: () => { const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focusPrev(this); } })
                     ]));
                 }
                 return this.wrapper;
@@ -673,16 +691,32 @@
                         td.addEventListener('blur', () => { setTimeout(() => this.api.hideTagMenu(), 150); if(linkifyTextNode(td)) { this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); } });
                         td.addEventListener('keydown', (e) => {
                             if (handleTagMenuKeydown(e, this.api)) return;
-                            if (e.key === 'ArrowUp' && rowIndex === 0) { const idx = this.api.getIndex(this); if (idx > 0) this.api.focus(idx - 1, true); }
-                            if (e.key === 'ArrowDown' && rowIndex === this.rows.length - 1) { const idx = this.api.getIndex(this); if (idx < this.api.getBlockCount() - 1) this.api.focus(idx + 1); }
-                            if (e.key === 'Backspace' && td.innerText.replace(/[\u200B-\u200D\uFEFF]/g, '').trim() === '' && this.rows.length === 1 && this.rows[0].length === 1) { e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1, true); }
+                            
+                            if (e.key === 'ArrowUp' && rowIndex === 0) { 
+                                e.preventDefault(); this.api.focusPrev(this); 
+                            }
+                            if (e.key === 'ArrowDown' && rowIndex === this.rows.length - 1) { 
+                                e.preventDefault(); this.api.focusNext(this); 
+                            }
+                            
+                            // Delete empty 1x1 table completely with backspace
+                            if (e.key === 'Backspace' && td.innerText.replace(/[\u200B-\u200D\uFEFF]/g, '').trim() === '' && this.rows.length === 1 && this.rows[0].length === 1) { 
+                                e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focusPrev(this); 
+                            }
                         });
                         tr.appendChild(td);
                     });
                     this.table.appendChild(tr);
                 });
             }
-            focus() { const cell = this.table.querySelector('td'); if (cell) cell.focus(); }
+            focus(atEnd = false) { 
+                const cells = this.table.querySelectorAll('td'); 
+                if (cells.length) { 
+                    const cell = atEnd ? cells[cells.length - 1] : cells[0];
+                    cell.focus();
+                    if (atEnd) moveCaretToEnd(cell);
+                } 
+            }
             save() { return { rows: this.rows }; }
         }
 
@@ -713,7 +747,7 @@
                 this.wrapper.innerHTML = ''; this.items.forEach((item, idx) => this.wrapper.appendChild(this.createItemNode(item, idx))); this.api.onChange();
                 if (focusIndex >= 0 && this.wrapper.children[focusIndex]) { const el = this.wrapper.children[focusIndex].querySelector('.checklist-text'); el.focus(); moveCaretToEnd(el); }
             }
-            focus(atEnd = false) { const texts = this.wrapper.querySelectorAll('.checklist-text'); if(texts.length) { const el = texts[texts.length-1]; el.focus(); if (atEnd) moveCaretToEnd(el); } }
+            focus(atEnd = false) { const texts = this.wrapper.querySelectorAll('.checklist-text'); if(texts.length) { const el = atEnd ? texts[texts.length-1] : texts[0]; el.focus(); if (atEnd) moveCaretToEnd(el); } }
             save() { return { items: this.items }; }
         }
 
@@ -743,7 +777,7 @@
                 this.wrapper.innerHTML = ''; this.items.forEach((item, idx) => this.wrapper.appendChild(this.createItemNode(item, idx))); this.api.onChange();
                 if (focusIndex >= 0 && this.wrapper.children[focusIndex]) { const el = this.wrapper.children[focusIndex].querySelector('.list-text'); el.focus(); moveCaretToEnd(el); }
             }
-            focus(atEnd = false) { const texts = this.wrapper.querySelectorAll('.list-text'); if(texts.length) { const el = texts[texts.length-1]; el.focus(); if (atEnd) moveCaretToEnd(el); } }
+            focus(atEnd = false) { const texts = this.wrapper.querySelectorAll('.list-text'); if(texts.length) { const el = atEnd ? texts[texts.length-1] : texts[0]; el.focus(); if (atEnd) moveCaretToEnd(el); } }
             save() { return { style: this.style, items: this.items }; }
         }
 
@@ -768,8 +802,10 @@
                 this.titleInput.addEventListener('input', e => { this.data.title = e.target.value; this.api.onChange(); });
                 this.titleInput.addEventListener('keydown', e => {
                     if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1);
+                        e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focusPrev(this);
                     }
+                    if (e.key === 'ArrowDown') { e.preventDefault(); this.api.focusNext(this); }
+                    if (e.key === 'ArrowUp') { e.preventDefault(); this.api.focusPrev(this); }
                 });
                 
                 const controls = createEl('div', 'tool-controls');
@@ -777,7 +813,7 @@
                 header.append(this.titleInput, controls);
                 return header;
             }
-            focus() { if(this.titleInput) this.titleInput.focus(); }
+            focus(atEnd = false) { if(this.titleInput) this.titleInput.focus(); }
             save() { return this.data; }
             destroy() {}
         }
@@ -804,7 +840,13 @@
                 if (this.data.text) {
                     this.input = createEl('textarea', 'flat-input', { value: this.data.text, style: 'padding: 12px; resize: vertical; min-height: 100px;' });
                     if (this.readOnly) this.input.readOnly = true; 
-                    else this.input.addEventListener('input', (e) => { this.data.text = e.target.value; this.adjustHeight(); this.api.onChange(); });
+                    else {
+                        this.input.addEventListener('input', (e) => { this.data.text = e.target.value; this.adjustHeight(); this.api.onChange(); });
+                        this.input.addEventListener('keydown', (e) => {
+                            if (e.key === 'ArrowUp' && this.input.selectionStart === 0) { e.preventDefault(); this.api.focusPrev(this); }
+                            if (e.key === 'ArrowDown' && this.input.selectionStart === this.input.value.length) { e.preventDefault(); this.api.focusNext(this); }
+                        });
+                    }
                     body.appendChild(this.input); setTimeout(() => this.adjustHeight(), 0);
                 } else if (this.isScanning) {
                     body.style.padding = '24px'; body.style.textAlign = 'center';
@@ -853,6 +895,10 @@
 
                 let evalTimeout;
                 this.input.addEventListener('input', (e) => { adjustHeight(); this.data.code = e.target.value; clearTimeout(evalTimeout); evalTimeout = setTimeout(() => this.evaluateLogic(), 400); });
+                this.input.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowUp' && this.input.selectionStart === 0) { e.preventDefault(); this.api.focusPrev(this); }
+                    if (e.key === 'ArrowDown' && this.input.selectionStart === this.input.value.length) { e.preventDefault(); this.api.focusNext(this); }
+                });
                 
                 this.wrapper.append(this.input, this.output); return this.wrapper;
             }
@@ -1035,6 +1081,12 @@
                         dropdown.classList.add('active');
                     } else { dropdown.appendChild(createEl('div', 'recall-item', {textContent: 'No matches found'})); dropdown.classList.add('active'); }
                 });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowUp' && input.selectionStart === 0) { e.preventDefault(); this.api.focusPrev(this); }
+                    if (e.key === 'ArrowDown' && input.selectionStart === input.value.length && !dropdown.classList.contains('active')) { e.preventDefault(); this.api.focusNext(this); }
+                });
+
                 row.append(createEl('div', '', {innerHTML: ICONS.search}), input); searchWrapper.append(row, dropdown); setTimeout(() => input.focus(), 50); return searchWrapper;
             }
             renderRecalledState() {
@@ -1211,7 +1263,7 @@
                 const header = createEl('div', 'tool-header');
                 const titleInput = createEl('input', 'tool-title-input', { placeholder: 'UPLOAD PHOTO...', readOnly: true });
                 titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace') { e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1); }
+                    if (e.key === 'Backspace') { e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focusPrev(this); }
                 });
                 header.append(titleInput); this.wrapper.appendChild(header);
 
@@ -1270,7 +1322,8 @@
                     {id: 'compute', icon: ICONS.compute, name: 'Compute Logic', keywords: 'math calc logic sum code function'},
                     {id: 'calendar', icon: ICONS.calendar, name: 'Event', keywords: 'date time schedule notify reminder'},
                     {id: 'voice', icon: ICONS.mic, name: 'Voice Memo', keywords: 'audio record memo dictation sound'},
-                    {id: 'recall', icon: ICONS.recall, name: 'Recall Database', keywords: 'search find past query historical'}
+                    {id: 'recall', icon: ICONS.recall, name: 'Recall Database', keywords: 'search find past query historical'},
+                    {id: 'table', icon: ICONS.canvas, name: 'Table', keywords: 'table grid columns rows'}
                 ];
                 this.slashFiltered = [...this.slashOptions];
 
@@ -1305,6 +1358,24 @@
                     },
                     deleteBlock: (index) => this.deleteBlock(index),
                     focus: (index) => this.focus(index),
+
+                    // Unified Safe Navigation
+                    focusNext: (instance) => {
+                        const idx = this.createBlockAPI().getIndex(instance);
+                        if (idx === this.blocks.length - 1) {
+                            this.insertBlock('paragraph', {}, idx + 1, true);
+                        } else {
+                            const nextBlock = this.blocks[idx + 1];
+                            if (typeof nextBlock.instance.focus === 'function') nextBlock.instance.focus(false);
+                        }
+                    },
+                    focusPrev: (instance) => {
+                        const idx = this.createBlockAPI().getIndex(instance);
+                        if (idx > 0) {
+                            const prevBlock = this.blocks[idx - 1];
+                            if (typeof prevBlock.instance.focus === 'function') prevBlock.instance.focus(true);
+                        }
+                    },
                     
                     // Slash commands
                     showSlashMenu: (block, rect, query) => this.showSlashMenu(block, rect, query),
