@@ -10,10 +10,6 @@
     <meta name="apple-mobile-web-app-title" content="Notes">
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">
-    
-    <!-- Dynamic Manifest Injection -->
-    <link id="pwa-manifest" rel="manifest" href="">
-    <link id="pwa-icon" rel="apple-touch-icon" href="">
 
     <!-- Leaflet for Map Tool -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -38,7 +34,6 @@
         * { box-sizing: border-box; }
         body { background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 0; line-height: 1.6; overflow-x: hidden; }
         
-        /* Edge-to-edge layout with minimal safe padding */
         .app-container { max-width: 800px; width: 100%; margin: 0 auto; padding: calc(8vh + var(--safe-area-top)) 16px 50vh 16px; }
         
         ::-webkit-scrollbar { display: none; }
@@ -62,7 +57,6 @@
         /* --- NAVIGATION ACTIONS --- */
         .v-link { cursor: pointer; transition: all 0.1s; }
         .v-link:hover { color: var(--muted-text); }
-
         .persona-link { 
             background: var(--text-color); color: var(--bg-color); padding: 2px 6px; 
             font-weight: bold; font-family: monospace; text-transform: uppercase; 
@@ -73,11 +67,8 @@
 
         /* --- PROTRUDING BLOCK FOOTER ARCHITECTURE --- */
         #editor-container { position: relative; width: 100%; min-height: 20vh; outline: none; display: flex; flex-direction: column; gap: 12px; }
-        
         .block-wrapper { position: relative; padding: 0 0 16px 0; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
         .block-wrapper:hover, .block-wrapper:focus-within { border-bottom-color: var(--border-color); }
-        
-        /* Interactive Read-Only Mention CSS */
         .block-wrapper.is-readonly { cursor: pointer; border-radius: 6px; transition: background-color 0.15s, border-color 0.15s; }
         .block-wrapper.is-readonly:hover { background-color: var(--muted-bg); border-bottom-color: transparent !important; }
         .block-wrapper.is-readonly:focus-within { border-bottom-color: transparent !important; }
@@ -93,21 +84,17 @@
         .flat-btn:hover { background: var(--text-color); color: var(--bg-color); border-color: var(--text-color); }
         .flat-row { display: flex; align-items: center; gap: 12px; width: 100%; }
 
-        /* --- NATIVE TEXT STYLES (MARKDOWN TRIGGERED) --- */
+        /* --- NATIVE TEXT STYLES --- */
         .native-text-block { outline: none; line-height: 1.6; font-size: 16px; min-height: 24px; word-break: break-word; }
         .native-text-block[data-placeholder]:empty::before { content: attr(data-placeholder); color: var(--muted-text); pointer-events: none; }
         .native-header-1 { font-size: 2.2em; font-weight: 900; margin-top: 0.8em; text-transform: uppercase; letter-spacing: -1px; line-height: 1.1; }
         .native-header-2 { font-size: 1.5em; font-weight: bold; margin-top: 0.8em; border-bottom: 2px solid var(--text-color); padding-bottom: 4px; display: inline-block; line-height: 1.2; }
         .native-header-3 { font-size: 1.2em; font-weight: bold; margin-top: 0.8em; text-decoration: underline; line-height: 1.3; }
-        
         .native-quote { border-left: 4px solid var(--text-color); padding-left: 14px; margin: 8px 0; font-style: italic; color: var(--muted-text); background: var(--muted-bg); padding-top: 8px; padding-bottom: 8px; }
-        
         .native-table-wrapper { overflow-x: auto; margin: 8px 0; border: 1px solid var(--border-color); }
         .native-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .native-table td { border: 1px solid var(--border-color); padding: 8px; min-width: 80px; outline: none; vertical-align: top; }
         .native-table td:focus { background: var(--muted-bg); }
-        
-        /* Square Checkboxes & Lists */
         .checklist-item, .list-item-row { display: flex; align-items: flex-start; gap: 12px; margin: 8px 0; }
         .checklist-checkbox { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; border: 2px solid var(--text-color); background: transparent; cursor: pointer; margin-top: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .checklist-checkbox:checked::after { content: ''; width: 10px; height: 10px; background: var(--text-color); }
@@ -130,19 +117,16 @@
         .tool-icon-btn { width: 30px; height: 30px; border: none; background: transparent; color: var(--text-color); cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 0; transition: background 0.1s; }
         .tool-icon-btn:hover { background: var(--border-color); }
         .tool-icon-btn.active { background: var(--text-color) !important; color: var(--bg-color) !important; }
-        .tool-icon-btn.delete-btn:hover { background: #ef4444; color: #ffffff; }
 
         /* --- SPECIFIC TOOL OVERRIDES --- */
         .compute-code { font-family: monospace; font-weight: bold; border: none; }
         .compute-output { font-family: monospace; padding: 12px; background: var(--muted-bg); min-height: 30px; border-top: 1px dashed var(--border-color); }
-        
         .recall-dropdown { display: none; border-top: 1px solid var(--text-color); max-height: 200px; overflow-y: auto; }
         .recall-dropdown.active { display: block; }
         .recall-item { padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
         .recall-item:hover { background: var(--text-color); color: var(--bg-color); }
 
         .leaflet-container { z-index: 1 !important; width: 100%; height: 400px; background: var(--bg-color) !important; touch-action: auto; }
-        .drawing-mode { cursor: crosshair !important; touch-action: none !important; }
 
         .global-calendar-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; padding: 16px; }
         .global-calendar-modal.show { display: flex; opacity: 1; }
@@ -164,8 +148,6 @@
         </div>
         
         <div id="editor-container"></div>
-        
-        <!-- Interactive Slash Menu -->
         <div id="slash-menu" class="slash-menu"></div>
     </div>
 
@@ -216,10 +198,7 @@
         function createEl(tag, classNames = '', attributes = {}, children = []) {
             const el = document.createElement(tag); if (classNames) el.className = classNames;
             for (const [k, v] of Object.entries(attributes)) { 
-                if (k === 'innerHTML') el.innerHTML = v; 
-                else if (k === 'textContent') el.textContent = v; 
-                else if (k === 'style') el.style.cssText = v; 
-                else el.setAttribute(k, v); 
+                if (k === 'innerHTML') el.innerHTML = v; else if (k === 'textContent') el.textContent = v; else if (k === 'style') el.style.cssText = v; else el.setAttribute(k, v); 
             }
             children.forEach(c => c && el.append(c)); return el;
         }
@@ -240,10 +219,7 @@
         // 💾 ROBUST, ASYNCHRONOUS STORAGE ADAPTER
         // ============================================================================
         class IndexedDBAdapter {
-            constructor() { 
-                this.dbName = 'InfiniteNotesDB'; this.storeName = 'daily_notes'; 
-                this.cache = {}; this.isMemoryOnly = false; this.saveQueue = Promise.resolve(); 
-            }
+            constructor() { this.dbName = 'InfiniteNotesDB'; this.storeName = 'daily_notes'; this.cache = {}; this.isMemoryOnly = false; this.saveQueue = Promise.resolve(); }
             init() {
                 return new Promise((resolve) => {
                     try {
@@ -326,22 +302,24 @@
             };
             modal.addEventListener('click', (e) => { if (e.target.id === 'global-calendar-modal') { modal.classList.remove('show'); setTimeout(() => modal.style.display = 'none', 200); } });
 
-            return {
-                open: function(initialDateObj, callback, options = {}) {
-                    activeDate = new Date(initialDateObj); viewDate = new Date(activeDate); onConfirm = callback;
-                    config = options; render(); modal.style.display = 'flex'; void modal.offsetWidth; modal.classList.add('show');
-                }
-            };
+            return { open: function(initialDateObj, callback, options = {}) { activeDate = new Date(initialDateObj); viewDate = new Date(activeDate); onConfirm = callback; config = options; render(); modal.style.display = 'flex'; void modal.offsetWidth; modal.classList.add('show'); } };
         })();
 
         // ============================================================================
-        // TEXT PARSERS (PERSONAS & HASHTAGS)
+        // TEXT PARSERS (PERSONAS & HASHTAGS) & UTILS
         // ============================================================================
+        function extractBlockText(block) {
+            let text = block.type + " ";
+            if (block.data.text) text += block.data.text + " ";
+            if (block.data.title) text += block.data.title + " ";
+            if (block.data.items) text += block.data.items.map(i => i.content || i.text || '').join(' ') + " ";
+            return text.replace(/<[^>]*>?/gm, ' ').trim();
+        }
+
         function linkifyTextNode(el) {
             if (!el) return false;
             const html = el.innerHTML;
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
+            const temp = document.createElement('div'); temp.innerHTML = html;
             let changed = false;
             
             const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
@@ -350,86 +328,48 @@
             while(walker.nextNode()) {
                 const node = walker.currentNode;
                 if (node.parentNode.closest('a.persona-link')) continue;
-                
-                // Support multiple dotted extensions e.g. #persona.name.ow
-                const regex = /(^|\s)(#[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)/g;
-                if (regex.test(node.nodeValue)) {
-                    nodesToReplace.push(node);
-                }
+                if (/(^|\s)(#[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)/g.test(node.nodeValue)) nodesToReplace.push(node);
             }
             
             nodesToReplace.forEach(node => {
                 const span = document.createElement('span');
-                const regex = /(^|\s)(#[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)/g;
-                span.innerHTML = node.nodeValue.replace(regex, (match, space, tag) => {
-                    const target = tag.replace('#', '').toLowerCase();
-                    return `${space}<a class="v-link persona-link" data-target="tag-${target}">${tag}</a>`;
+                span.innerHTML = node.nodeValue.replace(/(^|\s)(#[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)/g, (match, space, tag) => {
+                    return `${space}<a class="v-link persona-link" data-target="tag-${tag.replace('#', '').toLowerCase()}">${tag}</a>`;
                 });
-                
                 const parent = node.parentNode;
                 parent.replaceChild(span, node);
-                
-                while(span.firstChild) {
-                    parent.insertBefore(span.firstChild, span);
-                }
+                while(span.firstChild) parent.insertBefore(span.firstChild, span);
                 parent.removeChild(span);
                 changed = true;
             });
-            
-            if (changed) {
-                el.innerHTML = temp.innerHTML;
-            }
+            if (changed) el.innerHTML = temp.innerHTML;
             return changed;
         }
 
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.v-link');
-            if (link) {
-                e.preventDefault();
-                const target = link.getAttribute('data-target');
-                if (target) window.loadVirtualPage(target);
-            }
+            if (link) { e.preventDefault(); const target = link.getAttribute('data-target'); if (target) window.loadVirtualPage(target); }
         });
 
-        function moveCaretToEnd(el) {
-            try {
-                const range = document.createRange();
-                range.selectNodeContents(el);
-                range.collapse(false);
-                const sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-            } catch(e) {}
-        }
+        function moveCaretToEnd(el) { try { const range = document.createRange(); range.selectNodeContents(el); range.collapse(false); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); } catch(e) {} }
 
         // ============================================================================
         // NATIVE TEXT BLOCKS
         // ============================================================================
-
         function handleArrowNavigation(e, api, blockInstance, el) {
-            if (e.key === 'ArrowUp') {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                 const sel = window.getSelection();
                 if (sel.rangeCount > 0) {
                     const r = sel.getRangeAt(0).cloneRange();
                     r.selectNodeContents(el);
-                    r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+                    if (e.key === 'ArrowUp') r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+                    else r.setStart(sel.getRangeAt(0).endContainer, sel.getRangeAt(0).endOffset);
+                    
                     if (r.toString().length === 0) {
                         e.preventDefault();
                         const idx = api.getIndex(blockInstance);
-                        if (idx > 0) api.focus(idx - 1, true);
-                    }
-                }
-            }
-            if (e.key === 'ArrowDown') {
-                const sel = window.getSelection();
-                if (sel.rangeCount > 0) {
-                    const r = sel.getRangeAt(0).cloneRange();
-                    r.selectNodeContents(el);
-                    r.setStart(sel.getRangeAt(0).endContainer, sel.getRangeAt(0).endOffset);
-                    if (r.toString().length === 0) {
-                        e.preventDefault();
-                        const idx = api.getIndex(blockInstance);
-                        if (idx < api.getBlockCount() - 1) api.focus(idx + 1);
+                        if (e.key === 'ArrowUp' && idx > 0) api.focus(idx - 1, true);
+                        if (e.key === 'ArrowDown' && idx < api.getBlockCount() - 1) api.focus(idx + 1);
                     }
                 }
             }
@@ -450,33 +390,21 @@
                         if (isEmpty) {
                             if (idx > 0) {
                                 const prevBlock = api.getBlock(idx - 1);
-                                if (prevBlock && !['paragraph', 'header', 'list', 'checklist', 'quote', 'table'].includes(prevBlock.type)) {
-                                    api.deleteBlock(idx - 1);
-                                } else {
-                                    api.deleteBlock(idx);
-                                    api.focus(idx - 1, true);
-                                }
-                            } else if (blockType !== 'paragraph') {
-                                api.deleteBlock(0);
-                                api.insertBlock('paragraph', {}, 0, true);
-                            }
+                                if (prevBlock && !['paragraph', 'header', 'list', 'checklist', 'quote', 'table'].includes(prevBlock.type)) api.deleteBlock(idx - 1);
+                                else { api.deleteBlock(idx); api.focus(idx - 1, true); }
+                            } else if (blockType !== 'paragraph') { api.deleteBlock(0); api.insertBlock('paragraph', {}, 0, true); }
                         } else {
                             if (idx > 0) {
                                 const prevBlock = api.getBlock(idx - 1);
                                 if (prevBlock && ['paragraph', 'header', 'quote'].includes(prevBlock.type)) {
-                                    const prevInstance = prevBlock.instance;
-                                    const htmlToAppend = el.innerHTML;
-                                    let prevHtml = prevInstance.el.innerHTML;
+                                    let prevHtml = prevBlock.instance.el.innerHTML;
                                     if (prevHtml.endsWith('<br>')) prevHtml = prevHtml.slice(0, -4);
-                                    prevInstance.el.innerHTML = prevHtml + htmlToAppend;
+                                    prevBlock.instance.el.innerHTML = prevHtml + el.innerHTML;
                                     api.deleteBlock(idx);
-                                    prevInstance.focus(true); 
-                                } else {
-                                    api.focus(idx - 1, true);
-                                }
+                                    prevBlock.instance.focus(true); 
+                                } else api.focus(idx - 1, true);
                             } else if (blockType !== 'paragraph') {
-                                const currentHtml = el.innerHTML;
-                                api.deleteBlock(0);
+                                const currentHtml = el.innerHTML; api.deleteBlock(0);
                                 const newP = api.insertBlock('paragraph', {text: currentHtml}, 0, false);
                                 setTimeout(() => { newP.instance.focus(); }, 10);
                             }
@@ -487,39 +415,22 @@
         }
 
         function handleListKeydown(e, api, blockInstance, textEl, itemsArray, index, rebuildCallback) {
-            if (e.key === 'ArrowUp') {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                 const sel = window.getSelection();
                 if (sel.rangeCount > 0) {
                     const r = sel.getRangeAt(0).cloneRange();
                     r.selectNodeContents(textEl);
-                    r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+                    if (e.key === 'ArrowUp') r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+                    else r.setStart(sel.getRangeAt(0).endContainer, sel.getRangeAt(0).endOffset);
+
                     if (r.toString().length === 0) {
                         e.preventDefault();
-                        if (index > 0) {
-                            const prevInput = blockInstance.wrapper.children[index - 1].querySelector('.checklist-text, .list-text');
-                            prevInput.focus();
-                            moveCaretToEnd(prevInput);
+                        if (e.key === 'ArrowUp') {
+                            if (index > 0) { const prevInput = blockInstance.wrapper.children[index - 1].querySelector('.checklist-text, .list-text'); prevInput.focus(); moveCaretToEnd(prevInput); } 
+                            else { const idx = api.getIndex(blockInstance); if (idx > 0) api.focus(idx - 1, true); }
                         } else {
-                            const idx = api.getIndex(blockInstance);
-                            if (idx > 0) api.focus(idx - 1, true);
-                        }
-                    }
-                }
-            }
-            if (e.key === 'ArrowDown') {
-                const sel = window.getSelection();
-                if (sel.rangeCount > 0) {
-                    const r = sel.getRangeAt(0).cloneRange();
-                    r.selectNodeContents(textEl);
-                    r.setStart(sel.getRangeAt(0).endContainer, sel.getRangeAt(0).endOffset);
-                    if (r.toString().length === 0) {
-                        e.preventDefault();
-                        if (index < itemsArray.length - 1) {
-                            const nextInput = blockInstance.wrapper.children[index + 1].querySelector('.checklist-text, .list-text');
-                            nextInput.focus();
-                        } else {
-                            const idx = api.getIndex(blockInstance);
-                            if (idx < api.getBlockCount() - 1) api.focus(idx + 1);
+                            if (index < itemsArray.length - 1) { const nextInput = blockInstance.wrapper.children[index + 1].querySelector('.checklist-text, .list-text'); nextInput.focus(); } 
+                            else { const idx = api.getIndex(blockInstance); if (idx < api.getBlockCount() - 1) api.focus(idx + 1); }
                         }
                     }
                 }
@@ -527,43 +438,21 @@
             if (e.key === 'Backspace') {
                 const sel = window.getSelection();
                 if (sel.rangeCount > 0) {
-                    const r = sel.getRangeAt(0).cloneRange();
-                    r.selectNodeContents(textEl);
-                    r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
+                    const r = sel.getRangeAt(0).cloneRange(); r.selectNodeContents(textEl); r.setEnd(sel.getRangeAt(0).startContainer, sel.getRangeAt(0).startOffset);
                     if (r.toString().length === 0) {
                         e.preventDefault();
-                        const isEmpty = textEl.textContent.replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim() === '';
-                        if (isEmpty) {
-                            if (itemsArray.length <= 1) {
-                                const idx = api.getIndex(blockInstance);
-                                if (idx > 0) {
-                                    api.deleteBlock(idx);
-                                    api.focus(idx - 1, true);
-                                } else {
-                                    api.deleteBlock(0);
-                                    api.insertBlock('paragraph', {}, 0, true);
-                                }
-                            } else {
-                                itemsArray.splice(index, 1);
-                                rebuildCallback(Math.max(0, index - 1));
-                            }
+                        if (textEl.textContent.replace(/[\u200B-\u200D\uFEFF\u00A0]/g, '').trim() === '') {
+                            if (itemsArray.length <= 1) { const idx = api.getIndex(blockInstance); if (idx > 0) { api.deleteBlock(idx); api.focus(idx - 1, true); } else { api.deleteBlock(0); api.insertBlock('paragraph', {}, 0, true); } } 
+                            else { itemsArray.splice(index, 1); rebuildCallback(Math.max(0, index - 1)); }
                         } else {
                             if (index > 0) {
-                                const prevHtml = blockInstance.wrapper.children[index - 1].querySelector('.list-text, .checklist-text').innerHTML;
-                                const currentHtml = textEl.innerHTML;
-                                let cleanHtml = prevHtml;
+                                let cleanHtml = blockInstance.wrapper.children[index - 1].querySelector('.list-text, .checklist-text').innerHTML;
                                 if (cleanHtml.endsWith('<br>')) cleanHtml = cleanHtml.slice(0, -4);
-                                
-                                if (itemsArray[index - 1].hasOwnProperty('text')) itemsArray[index - 1].text = cleanHtml + currentHtml; 
-                                if (itemsArray[index - 1].hasOwnProperty('content')) itemsArray[index - 1].content = cleanHtml + currentHtml; 
-                                
-                                itemsArray.splice(index, 1);
-                                rebuildCallback(index - 1);
+                                if (itemsArray[index - 1].hasOwnProperty('text')) itemsArray[index - 1].text = cleanHtml + textEl.innerHTML; 
+                                if (itemsArray[index - 1].hasOwnProperty('content')) itemsArray[index - 1].content = cleanHtml + textEl.innerHTML; 
+                                itemsArray.splice(index, 1); rebuildCallback(index - 1);
                             } else if (itemsArray.length === 1) {
-                                const currentHtml = textEl.innerHTML;
-                                const idx = api.getIndex(blockInstance);
-                                api.deleteBlock(idx);
-                                api.insertBlock('paragraph', {text: currentHtml}, idx, true);
+                                const idx = api.getIndex(blockInstance); api.deleteBlock(idx); api.insertBlock('paragraph', {text: textEl.innerHTML}, idx, true);
                             }
                         }
                     }
@@ -584,14 +473,8 @@
                 const rawText = this.el.textContent.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\u00A0/g, ' ');
                 const isTagPage = window.currentDateStr && window.currentDateStr.startsWith('tag-');
                 
-                if (rawText.startsWith('/')) {
-                    const rect = this.el.getBoundingClientRect();
-                    this.api.showSlashMenu(this, rect, rawText.slice(1).trim().toLowerCase());
-                    this.api.onChange();
-                    return;
-                } else {
-                    this.api.hideSlashMenu();
-                }
+                if (rawText.startsWith('/')) { this.api.showSlashMenu(this, this.el.getBoundingClientRect(), rawText.slice(1).trim().toLowerCase()); this.api.onChange(); return; } 
+                else this.api.hideSlashMenu();
 
                 if (rawText === '# ') { if (!isTagPage) this.transformTo('header', { level: 1 }); return; }
                 if (rawText === '## ') { if (!isTagPage) this.transformTo('header', { level: 2 }); return; }
@@ -604,11 +487,7 @@
 
                 this.api.onChange();
             }
-            transformTo(type, data) {
-                const idx = this.api.getIndex(this);
-                this.api.deleteBlock(idx);
-                this.api.insertBlock(type, data, idx, true);
-            }
+            transformTo(type, data) { const idx = this.api.getIndex(this); this.api.deleteBlock(idx); this.api.insertBlock(type, data, idx, true); }
             handleKeydown(e) {
                 if (this.api.isSlashMenuVisible()) {
                     if (e.key === 'ArrowDown') { e.preventDefault(); this.api.slashNavigate(1); return; }
@@ -616,15 +495,8 @@
                     if (e.key === 'Enter') { e.preventDefault(); this.api.slashExecute(this); return; }
                     if (e.key === 'Escape') { e.preventDefault(); this.api.hideSlashMenu(); return; }
                 }
-
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true);
-                    return;
-                }
-                
-                handleArrowNavigation(e, this.api, this, this.el);
-                handleTextBackspace(e, this.api, this, this.el, 'paragraph');
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); return; }
+                handleArrowNavigation(e, this.api, this, this.el); handleTextBackspace(e, this.api, this, this.el, 'paragraph');
             }
             focus(atEnd = false) { this.el.focus(); if (atEnd) moveCaretToEnd(this.el); }
             save() { return { text: this.el.innerHTML }; }
@@ -636,8 +508,7 @@
                 this.el = createEl('div', `native-text-block native-header-${this.level}`, { contentEditable: !this.readOnly, innerHTML: this.data.text || '', 'data-placeholder': `HEADING ${this.level}...` });
                 this.el.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); return; }
-                    handleArrowNavigation(e, this.api, this, this.el);
-                    handleTextBackspace(e, this.api, this, this.el, 'header');
+                    handleArrowNavigation(e, this.api, this, this.el); handleTextBackspace(e, this.api, this, this.el, 'header');
                 });
                 this.el.addEventListener('input', () => this.api.onChange());
                 this.el.addEventListener('blur', () => { if (linkifyTextNode(this.el)) this.api.onChange(); });
@@ -653,8 +524,7 @@
                 this.el = createEl('blockquote', 'native-quote native-text-block', { contentEditable: !this.readOnly, innerHTML: this.data.text || '', 'data-placeholder': 'Quote...' });
                 this.el.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); return; }
-                    handleArrowNavigation(e, this.api, this, this.el);
-                    handleTextBackspace(e, this.api, this, this.el, 'quote');
+                    handleArrowNavigation(e, this.api, this, this.el); handleTextBackspace(e, this.api, this, this.el, 'quote');
                 });
                 this.el.addEventListener('input', () => this.api.onChange());
                 this.el.addEventListener('blur', () => { if (linkifyTextNode(this.el)) this.api.onChange(); });
@@ -665,22 +535,16 @@
         }
 
         class TableBlock {
-            constructor({ data, api, readOnly }) {
-                this.data = data; this.api = api; this.readOnly = readOnly;
-                this.rows = data.rows || [['', ''], ['', '']];
-            }
+            constructor({ data, api, readOnly }) { this.data = data; this.api = api; this.readOnly = readOnly; this.rows = data.rows || [['', ''], ['', '']]; }
             render() {
-                this.wrapper = createEl('div', 'native-table-wrapper');
-                this.table = createEl('table', 'native-table');
-                this.renderRows();
-                this.wrapper.appendChild(this.table);
+                this.wrapper = createEl('div', 'native-table-wrapper'); this.table = createEl('table', 'native-table');
+                this.renderRows(); this.wrapper.appendChild(this.table);
 
                 if (!this.readOnly) {
-                    const controls = createEl('div', 'table-controls', {style: 'display: flex; gap: 8px; padding: 4px;'}, [
+                    this.wrapper.appendChild(createEl('div', 'table-controls', {style: 'display: flex; gap: 8px; padding: 4px;'}, [
                         createEl('button', 'flat-btn', { textContent: '+ Row', style: 'font-size: 10px; padding: 4px 8px;', onclick: () => { this.rows.push(new Array(this.rows[0].length).fill('')); this.renderRows(); this.api.onChange(); } }),
                         createEl('button', 'flat-btn', { textContent: '+ Col', style: 'font-size: 10px; padding: 4px 8px;', onclick: () => { this.rows.forEach(r => r.push('')); this.renderRows(); this.api.onChange(); } })
-                    ]);
-                    this.wrapper.appendChild(controls);
+                    ]));
                 }
                 return this.wrapper;
             }
@@ -693,20 +557,9 @@
                         td.addEventListener('input', () => { this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); });
                         td.addEventListener('blur', () => { if(linkifyTextNode(td)) { this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); } });
                         td.addEventListener('keydown', (e) => {
-                            if (e.key === 'ArrowUp' && rowIndex === 0) {
-                                const idx = this.api.getIndex(this);
-                                if (idx > 0) this.api.focus(idx - 1, true);
-                            }
-                            if (e.key === 'ArrowDown' && rowIndex === this.rows.length - 1) {
-                                const idx = this.api.getIndex(this);
-                                if (idx < this.api.getBlockCount() - 1) this.api.focus(idx + 1);
-                            }
-                            if (e.key === 'Backspace' && td.innerText.replace(/[\u200B-\u200D\uFEFF]/g, '').trim() === '' && this.rows.length === 1 && this.rows[0].length === 1) {
-                                e.preventDefault();
-                                const idx = this.api.getIndex(this);
-                                this.api.deleteBlock(idx);
-                                if (idx > 0) this.api.focus(idx - 1, true);
-                            }
+                            if (e.key === 'ArrowUp' && rowIndex === 0) { const idx = this.api.getIndex(this); if (idx > 0) this.api.focus(idx - 1, true); }
+                            if (e.key === 'ArrowDown' && rowIndex === this.rows.length - 1) { const idx = this.api.getIndex(this); if (idx < this.api.getBlockCount() - 1) this.api.focus(idx + 1); }
+                            if (e.key === 'Backspace' && td.innerText.replace(/[\u200B-\u200D\uFEFF]/g, '').trim() === '' && this.rows.length === 1 && this.rows[0].length === 1) { e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1, true); }
                         });
                         tr.appendChild(td);
                     });
@@ -719,14 +572,10 @@
 
         class ChecklistBlock {
             constructor({ data, api, readOnly }) { this.data = data; this.api = api; this.readOnly = readOnly; this.items = data.items || [{ text: '', checked: false }]; }
-            render() {
-                this.wrapper = createEl('div', 'native-checklist');
-                this.items.forEach((item, index) => this.wrapper.appendChild(this.createItemNode(item, index))); return this.wrapper;
-            }
+            render() { this.wrapper = createEl('div', 'native-checklist'); this.items.forEach((item, index) => this.wrapper.appendChild(this.createItemNode(item, index))); return this.wrapper; }
             createItemNode(item, index) {
                 const row = createEl('div', 'checklist-item');
-                const checkbox = createEl('input', 'checklist-checkbox', { type: 'checkbox', checked: item.checked });
-                if (this.readOnly) checkbox.disabled = true;
+                const checkbox = createEl('input', 'checklist-checkbox', { type: 'checkbox', checked: item.checked }); if (this.readOnly) checkbox.disabled = true;
                 const text = createEl('div', `native-text-block checklist-text ${item.checked ? 'checked' : ''}`, { contentEditable: !this.readOnly, innerHTML: item.text });
                 
                 checkbox.addEventListener('change', () => { item.checked = checkbox.checked; text.classList.toggle('checked', item.checked); this.api.onChange(); });
@@ -745,29 +594,15 @@
             }
             rebuild(focusIndex = -1) {
                 this.wrapper.innerHTML = ''; this.items.forEach((item, idx) => this.wrapper.appendChild(this.createItemNode(item, idx))); this.api.onChange();
-                if (focusIndex >= 0 && this.wrapper.children[focusIndex]) {
-                    const el = this.wrapper.children[focusIndex].querySelector('.checklist-text');
-                    el.focus();
-                    moveCaretToEnd(el);
-                }
+                if (focusIndex >= 0 && this.wrapper.children[focusIndex]) { const el = this.wrapper.children[focusIndex].querySelector('.checklist-text'); el.focus(); moveCaretToEnd(el); }
             }
-            focus(atEnd = false) { 
-                const texts = this.wrapper.querySelectorAll('.checklist-text'); 
-                if(texts.length) {
-                    const el = texts[texts.length-1];
-                    el.focus();
-                    if (atEnd) moveCaretToEnd(el);
-                } 
-            }
+            focus(atEnd = false) { const texts = this.wrapper.querySelectorAll('.checklist-text'); if(texts.length) { const el = texts[texts.length-1]; el.focus(); if (atEnd) moveCaretToEnd(el); } }
             save() { return { items: this.items }; }
         }
 
         class ListBlock {
             constructor({ data, api, readOnly }) { this.data = data; this.api = api; this.readOnly = readOnly; this.items = data.items || [{ content: '' }]; this.style = data.style || 'unordered'; }
-            render() {
-                this.wrapper = createEl('div', 'native-list');
-                this.items.forEach((item, index) => this.wrapper.appendChild(this.createItemNode(item, index))); return this.wrapper;
-            }
+            render() { this.wrapper = createEl('div', 'native-list'); this.items.forEach((item, index) => this.wrapper.appendChild(this.createItemNode(item, index))); return this.wrapper; }
             createItemNode(item, index) {
                 const row = createEl('div', 'list-item-row');
                 const bullet = createEl('div', 'list-bullet', { innerHTML: this.style === 'ordered' ? `${index + 1}.` : '-' });
@@ -788,20 +623,9 @@
             }
             rebuild(focusIndex = -1) {
                 this.wrapper.innerHTML = ''; this.items.forEach((item, idx) => this.wrapper.appendChild(this.createItemNode(item, idx))); this.api.onChange();
-                if (focusIndex >= 0 && this.wrapper.children[focusIndex]) {
-                    const el = this.wrapper.children[focusIndex].querySelector('.list-text');
-                    el.focus();
-                    moveCaretToEnd(el);
-                }
+                if (focusIndex >= 0 && this.wrapper.children[focusIndex]) { const el = this.wrapper.children[focusIndex].querySelector('.list-text'); el.focus(); moveCaretToEnd(el); }
             }
-            focus(atEnd = false) { 
-                const texts = this.wrapper.querySelectorAll('.list-text'); 
-                if(texts.length) {
-                    const el = texts[texts.length-1];
-                    el.focus();
-                    if (atEnd) moveCaretToEnd(el);
-                } 
-            }
+            focus(atEnd = false) { const texts = this.wrapper.querySelectorAll('.list-text'); if(texts.length) { const el = texts[texts.length-1]; el.focus(); if (atEnd) moveCaretToEnd(el); } }
             save() { return { style: this.style, items: this.items }; }
         }
 
@@ -809,40 +633,55 @@
         // COMPLEX WIDGET TOOLS (ISOLATED IN / MENU)
         // ============================================================================
 
-        class ScanTool {
-            constructor({data, api, readOnly}) { 
-                this.api = api; this.readOnly = readOnly; 
-                this.data = { title: data.title || '', text: data.text || '' }; 
-                this.isScanning = false; this.scanProgress = '';
+        // Base class handling boilerplate for wrapper, header, and delete logic
+        class BaseWidgetTool {
+            constructor({data, api, readOnly}) {
+                this.api = api; this.readOnly = readOnly;
+                this.data = this.getDefaultData(data);
                 this.wrapper = createEl('div', 'tool-box');
             }
-            render() { this.buildUI(); return this.wrapper; }
-            buildUI() {
-                this.wrapper.innerHTML = '';
+            getDefaultData(data) { return { title: data?.title || '' }; }
+            getPlaceholder() { return 'WIDGET TITLE...'; }
+            
+            buildHeader(controlsElements = []) {
                 const header = createEl('div', 'tool-header');
-                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title, placeholder: 'DOCUMENT TITLE...' });
+                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title, placeholder: this.getPlaceholder() });
                 if (this.readOnly) this.titleInput.readOnly = true;
                 
                 this.titleInput.addEventListener('input', e => { this.data.title = e.target.value; this.api.onChange(); });
                 this.titleInput.addEventListener('keydown', e => {
                     if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
+                        e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1);
                     }
                 });
                 
                 const controls = createEl('div', 'tool-controls');
+                controlsElements.forEach(el => el && controls.appendChild(el));
+                header.append(this.titleInput, controls);
+                return header;
+            }
+            focus() { if(this.titleInput) this.titleInput.focus(); }
+            save() { return this.data; }
+            destroy() {}
+        }
+
+        class ScanTool extends BaseWidgetTool {
+            getDefaultData(data) { return { title: data?.title || '', text: data?.text || '' }; }
+            getPlaceholder() { return 'DOCUMENT TITLE...'; }
+            constructor(args) { super(args); this.isScanning = false; this.scanProgress = ''; }
+            
+            render() { this.buildUI(); return this.wrapper; }
+            buildUI() {
+                this.wrapper.innerHTML = '';
+                let controls = [];
                 if (!this.readOnly) {
                     const rescanBtn = createEl('button', 'tool-icon-btn', { innerHTML: ICONS.scan });
                     const fileInput = createEl('input', '', { type: 'file', accept: 'image/*', capture: 'environment', style: 'display: none;' });
                     rescanBtn.onclick = () => fileInput.click();
                     fileInput.onchange = (e) => { this.handleScan(e.target.files[0]); e.target.value = ''; };
-                    controls.append(rescanBtn, fileInput);
+                    controls.push(rescanBtn, fileInput);
                 }
-                header.append(this.titleInput, controls);
-                this.wrapper.appendChild(header);
+                this.wrapper.appendChild(this.buildHeader(controls));
 
                 const body = createEl('div', '', { style: 'display: flex; flex-direction: column; flex: 1;' });
                 if (this.data.text) {
@@ -862,7 +701,6 @@
                 }
                 this.wrapper.appendChild(body);
             }
-            focus() { if(this.titleInput) this.titleInput.focus(); }
             adjustHeight() { if (this.input) { this.input.style.height = 'auto'; this.input.style.height = (this.input.scrollHeight) + 'px'; } }
             async handleScan(file) {
                 if (!file) return;
@@ -878,29 +716,16 @@
                 } catch(e) { alert('Scan failed: ' + e.message); } 
                 finally { this.isScanning = false; this.buildUI(); this.api.onChange(); }
             }
-            save() { return this.data; }
         }
 
-        class ComputeTool {
-            constructor({data, api, readOnly}) { this.api = api; this.readOnly = readOnly; this.data = { title: data.title || '', code: data.code || '', output: data.output || '' }; this.wrapper = createEl('div', 'tool-box'); }
+        class ComputeTool extends BaseWidgetTool {
+            getDefaultData(data) { return { title: data?.title || '', code: data?.code || '', output: data?.output || '' }; }
+            getPlaceholder() { return 'LOGIC TITLE...'; }
+            
             render() {
                 this.wrapper.innerHTML = '';
-                const header = createEl('div', 'tool-header');
-                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title, placeholder: 'LOGIC TITLE...' });
-                if (this.readOnly) this.titleInput.readOnly = true;
-                
-                this.titleInput.addEventListener('input', e => { this.data.title = e.target.value; this.api.onChange(); });
-                this.titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
-                    }
-                });
-                
-                const controls = createEl('div', 'tool-controls', { innerHTML: `<div style="padding: 4px; color: var(--muted-text); margin-right: 4px;">${ICONS.compute}</div>` });
-                header.append(this.titleInput, controls);
+                const iconContainer = createEl('div', '', { innerHTML: `<div style="padding: 4px; color: var(--muted-text); margin-right: 4px;">${ICONS.compute}</div>` });
+                this.wrapper.appendChild(this.buildHeader([iconContainer]));
                 
                 this.input = createEl('textarea', 'flat-input compute-code', { placeholder: 'Type logic: 10 * 4...', value: this.data.code, style: 'padding: 12px; resize: vertical;' });
                 if (this.readOnly) this.input.readOnly = true;
@@ -912,9 +737,9 @@
                 let evalTimeout;
                 this.input.addEventListener('input', (e) => { adjustHeight(); this.data.code = e.target.value; clearTimeout(evalTimeout); evalTimeout = setTimeout(() => this.evaluateLogic(), 400); });
                 
-                this.wrapper.append(header, this.input, this.output); return this.wrapper;
+                this.wrapper.append(this.input, this.output); return this.wrapper;
             }
-            focus() { if(this.titleInput) this.titleInput.focus(); }
+            
             async evaluateLogic() {
                 if (!this.data.code.trim()) { this.output.innerHTML = ''; this.data.output = ''; this.api.onChange(); return; }
                 const find = (query) => {
@@ -923,12 +748,8 @@
                         if (!day.blocks) return;
                         day.blocks.forEach(b => {
                             if (b.type === 'compute' || b.type === 'recall') return; 
-                            let text = JSON.stringify(b.data).toLowerCase();
-                            if (text.includes(q)) {
-                                if (b.data.text) results.push(b.data.text.replace(/<[^>]*>?/gm, ''));
-                                else if (b.data.items) results.push(...b.data.items.map(i=>i.content||i.text).join(' '));
-                                else if (b.data.title) results.push(b.data.title);
-                            }
+                            const text = extractBlockText(b).toLowerCase();
+                            if (text.includes(q)) results.push(text);
                         });
                     }); return results;
                 };
@@ -950,34 +771,19 @@
                 } catch(e) { this.data.output = `<span style="color: #ef4444">${e.message}</span>`; this.output.innerHTML = this.data.output; }
                 this.api.onChange();
             }
-            save() { return this.data; }
         }
 
-        class CalendarTool {
-            constructor({data, api, readOnly}) {
-                this.id = crypto.randomUUID(); this.api = api; this.readOnly = readOnly;
-                this.data = { title: data.title || '', datetime: data.datetime || new Date().toISOString(), notified: data.notified || false };
+        class CalendarTool extends BaseWidgetTool {
+            getDefaultData(data) { return { title: data?.title || '', datetime: data?.datetime || new Date().toISOString(), notified: data?.notified || false }; }
+            getPlaceholder() { return 'EVENT TITLE...'; }
+            constructor(args) {
+                super(args);
+                this.id = crypto.randomUUID();
                 if (!this.data.notified && !this.readOnly && new Date(this.data.datetime) > new Date()) NotificationEngine.schedule(this.id, this.data.datetime, this.data.title);
-                this.wrapper = createEl('div', 'tool-box');
             }
-            formatDisplayDate() { const d = new Date(this.data.datetime); return `${d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} @ ${d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`; }
             render() {
                 this.wrapper.innerHTML = '';
-                const header = createEl('div', 'tool-header');
-                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title, placeholder: 'EVENT TITLE...' });
-                if (this.readOnly) this.titleInput.readOnly = true;
-                
-                this.titleInput.addEventListener('input', e => { this.data.title = e.target.value; NotificationEngine.schedule(this.id, this.data.datetime, this.data.title); this.api.onChange(); });
-                this.titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
-                    }
-                });
-                
-                const controls = createEl('div', 'tool-controls');
+                let controls = [];
                 if (!this.readOnly) {
                     const exportBtn = createEl('button', 'tool-icon-btn', { innerHTML: ICONS.download, title: 'Export ICS' });
                     exportBtn.onclick = () => {
@@ -991,49 +797,36 @@
                     if (isGranted) this.notifyBtn.classList.add('active');
                     this.notifyBtn.onclick = async () => { if (!('Notification' in window)) return alert('Notifications not supported.'); if (await Notification.requestPermission() === 'granted') { this.notifyBtn.classList.add('active'); NotificationEngine.schedule(this.id, this.data.datetime, this.data.title); } };
                     
-                    controls.append(this.notifyBtn, exportBtn);
+                    controls.push(this.notifyBtn, exportBtn);
                 }
-                header.append(this.titleInput, controls);
+                this.wrapper.appendChild(this.buildHeader(controls));
 
                 const body = createEl('div', '', { style: 'padding: 12px; display: flex; flex-direction: column;' });
-                this.displayTxt = createEl('span', '', { textContent: this.formatDisplayDate() });
+                const d = new Date(this.data.datetime);
+                const displayDateStr = `${d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} @ ${d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`;
+                
+                this.displayTxt = createEl('span', '', { textContent: displayDateStr });
                 const displayBtn = createEl('button', 'flat-btn', {style: 'width: 100%; justify-content: flex-start; background: var(--muted-bg); border: none;'}, [this.displayTxt]);
+                
                 if (!this.readOnly) {
-                    displayBtn.onclick = () => { DatePicker.open(new Date(this.data.datetime), (newDate) => { this.data.datetime = newDate.toISOString(); this.data.notified = false; this.displayTxt.textContent = this.formatDisplayDate(); NotificationEngine.schedule(this.id, this.data.datetime, this.data.title); this.api.onChange(); }, { showTime: true, disablePast: true }); };
+                    displayBtn.onclick = () => { DatePicker.open(new Date(this.data.datetime), (newDate) => { this.data.datetime = newDate.toISOString(); this.data.notified = false; this.render(); NotificationEngine.schedule(this.id, this.data.datetime, this.data.title); this.api.onChange(); }, { showTime: true, disablePast: true }); };
                 } else { displayBtn.style.pointerEvents = 'none'; }
                 body.appendChild(displayBtn);
 
-                this.wrapper.append(header, body); return this.wrapper;
+                this.wrapper.appendChild(body); return this.wrapper;
             }
-            focus() { if(this.titleInput) this.titleInput.focus(); }
             destroy() { NotificationEngine.cancel(this.id); }
-            save() { return this.data; }
         }
 
-        class VoiceMemo {
-            constructor({data, api, readOnly}) {
-                this.api = api; this.readOnly = readOnly; 
-                this.data = { url: data.url || null, title: data.title || '' };
+        class VoiceMemo extends BaseWidgetTool {
+            getDefaultData(data) { return { url: data?.url || null, title: data?.title || '' }; }
+            getPlaceholder() { return 'MEMO TITLE...'; }
+            constructor(args) {
+                super(args);
                 this.recorder = null; this.chunks = []; this.isPlaying = false; this.isRecording = false;
-                this.wrapper = createEl('div', 'tool-box');
             }
             render() {
                 this.wrapper.innerHTML = '';
-                const header = createEl('div', 'tool-header');
-                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title, placeholder: 'MEMO TITLE...' });
-                if (this.readOnly) this.titleInput.readOnly = true;
-                
-                this.titleInput.addEventListener('input', e => { this.data.title = e.target.value; this.api.onChange(); });
-                this.titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
-                    }
-                });
-
-                const controls = createEl('div', 'tool-controls');
                 this.statusText = createEl('div', '', { style: 'font-size: 11px; font-weight: bold; color: var(--muted-text); margin-right: 8px; text-transform: uppercase;' });
                 this.btn = createEl('button', 'tool-icon-btn');
                 this.audio = createEl('audio', '', { style: 'display: none;', src: this.data.url || '' });
@@ -1043,13 +836,9 @@
                 this.audio.onended = () => { this.isPlaying = false; this.updateUI(); };
                 this.btn.onclick = () => this.handleAction();
                 
-                controls.append(this.statusText, this.btn, this.audio);
-                header.append(this.titleInput, controls);
-                this.wrapper.appendChild(header);
-                
+                this.wrapper.appendChild(this.buildHeader([this.statusText, this.btn, this.audio]));
                 this.updateUI(); return this.wrapper;
             }
-            focus() { if (this.titleInput) this.titleInput.focus(); }
             updateUI() {
                 this.btn.style.background = 'transparent'; this.btn.style.color = 'var(--text-color)';
                 if (this.isPlaying) { this.btn.innerHTML = ICONS.pause; this.statusText.innerText = 'PLAYING'; this.btn.classList.add('active'); } 
@@ -1074,34 +863,15 @@
                 }
             }
             destroy() { if (this.recorder && this.recorder.state !== 'inactive') this.recorder.stop(); if (this.recorder && this.recorder.stream) this.recorder.stream.getTracks().forEach(track => track.stop()); this.audio.pause(); }
-            save() { return this.data; }
         }
 
-        class RecallTool {
-            constructor({data, api, readOnly}) { 
-                this.api = api; this.readOnly = readOnly; 
-                this.data = data && data.recalled ? data : { recalled: false, sourceDate: null, sourceTime: null, sourceBlock: null, title: data?.title || '' }; 
-                this.wrapper = createEl('div', 'tool-box'); 
-            }
+        class RecallTool extends BaseWidgetTool {
+            getDefaultData(data) { return data && data.recalled ? data : { recalled: false, sourceDate: null, sourceTime: null, sourceBlock: null, title: data?.title || '' }; }
+            getPlaceholder() { return 'RECALL TITLE...'; }
             render() {
                 this.wrapper.innerHTML = '';
-                const header = createEl('div', 'tool-header');
-                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title || '', placeholder: 'RECALL TITLE...' });
-                if (this.readOnly) this.titleInput.readOnly = true;
-                
-                this.titleInput.addEventListener('input', e => { this.data.title = e.target.value; this.api.onChange(); });
-                this.titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
-                    }
-                });
-                
-                const controls = createEl('div', 'tool-controls', { innerHTML: `<div style="padding: 4px; color: var(--muted-text); margin-right: 4px;">${ICONS.recall}</div>` });
-                header.append(this.titleInput, controls);
-                this.wrapper.appendChild(header);
+                const iconContainer = createEl('div', '', { innerHTML: `<div style="padding: 4px; color: var(--muted-text); margin-right: 4px;">${ICONS.recall}</div>` });
+                this.wrapper.appendChild(this.buildHeader([iconContainer]));
 
                 const body = createEl('div', '', { style: 'display: flex; flex-direction: column;' });
                 if (this.data.recalled) { body.appendChild(this.renderRecalledState()); } 
@@ -1110,7 +880,6 @@
                 this.wrapper.appendChild(body);
                 return this.wrapper;
             }
-            focus() { if(this.titleInput) this.titleInput.focus(); }
             renderSearchState() {
                 const searchWrapper = createEl('div');
                 const row = createEl('div', 'flat-row', {style: 'padding: 12px; gap: 8px;'});
@@ -1125,13 +894,7 @@
                         if (!dayData.blocks) return;
                         dayData.blocks.forEach(block => {
                             if (block.type === 'recall') return; 
-                            
-                            let searchableText = block.type + " ";
-                            if (block.data.text) searchableText += block.data.text + " ";
-                            if (block.data.title) searchableText += block.data.title + " ";
-                            if (block.data.items) searchableText += block.data.items.map(i => i.content || i.text).join(' ') + " ";
-                            
-                            if (searchableText.toLowerCase().includes(query)) { 
+                            if (extractBlockText(block).toLowerCase().includes(query)) { 
                                 results.push({ date: dateStr, block: block, timestamp: dayData.timestamps?.[block.id] }); 
                             }
                         });
@@ -1141,23 +904,14 @@
                         results.forEach(res => {
                             const item = createEl('div', 'recall-item');
                             const displayDate = new Date(res.date + 'T00:00:00').toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'});
-                            let snippet = "📄 " + res.block.type.toUpperCase();
-                            if (res.block.data.text) snippet = res.block.data.text.replace(/<[^>]*>?/gm, '');
-                            else if (res.block.data.title) snippet = res.block.data.title;
-                            else if (res.block.data.items) snippet = res.block.data.items.map(i=>i.content || i.text || '').join(', ').replace(/<[^>]*>?/gm, '');
+                            let snippet = extractBlockText(res.block);
+                            if (snippet.length === 0) snippet = "📄 " + res.block.type.toUpperCase();
                             
                             item.appendChild(createEl('div', '', {textContent: `${displayDate}`, style: 'font-size: 10px; font-weight: bold;'}));
                             item.appendChild(createEl('div', '', {textContent: snippet.substring(0, 50) + '...', style: 'font-size: 14px;'}));
                             item.onclick = () => { 
-                                this.data = { 
-                                    recalled: true, 
-                                    sourceDate: res.date, 
-                                    sourceTime: res.timestamp, 
-                                    sourceBlock: JSON.parse(JSON.stringify(res.block)), 
-                                    title: this.data.title 
-                                }; 
-                                this.render(); 
-                                this.api.onChange(); 
+                                this.data = { recalled: true, sourceDate: res.date, sourceTime: res.timestamp, sourceBlock: JSON.parse(JSON.stringify(res.block)), title: this.data.title }; 
+                                this.render(); this.api.onChange(); 
                             };
                             dropdown.appendChild(item);
                         });
@@ -1184,56 +938,31 @@
                 }
                 return container;
             }
-            save() { return this.data; }
         }
 
-        class BaseCanvasTool {
-            constructor({data, api, readOnly}) {
-                this.api = api; this.readOnly = readOnly;
-                const defaultData = this.getDefaultData(data);
-                this.data = { 
-                    title: data.title || '', 
-                    isLocked: data.isLocked || false, 
-                    lines: data.lines || [], 
-                    isDrawingActive: data.isDrawingActive || false,
-                    ...defaultData
-                };
-                this.wrapper = createEl('div', 'tool-box');
-                this.currentColor = '#EF4444'; this.lineLayers = []; this.currentPolyline = null; this.currentPoints = [];
+        class BaseCanvasTool extends BaseWidgetTool {
+            getDefaultData(data) { 
+                return { title: data?.title || '', isLocked: data?.isLocked || false, lines: data?.lines || [], isDrawingActive: data?.isDrawingActive || false, ...this.getCanvasDefaultData(data) };
             }
-            
-            getDefaultData(data) { return {}; }
+            getCanvasDefaultData(data) { return {}; }
             getPlaceholder() { return 'CANVAS TITLE...'; }
             needsSetup() { return false; }
             renderSetup() { return null; }
 
+            constructor(args) {
+                super(args);
+                this.currentColor = '#EF4444'; this.lineLayers = []; this.currentPolyline = null; this.currentPoints = [];
+            }
+
             render() {
                 this.wrapper.innerHTML = ''; 
-                
                 if (this.needsSetup()) {
-                    if (this.readOnly) {
-                        this.wrapper.innerHTML = '<div style="padding: 24px; text-align: center;">Empty Block</div>';
-                    } else {
-                        this.renderSetup();
-                    }
+                    if (this.readOnly) this.wrapper.innerHTML = '<div style="padding: 24px; text-align: center;">Empty Block</div>';
+                    else this.renderSetup();
                     return this.wrapper;
                 }
 
-                const header = createEl('div', 'tool-header');
-                this.titleInput = createEl('input', 'tool-title-input', { value: this.data.title, placeholder: this.getPlaceholder() });
-                if (this.readOnly) this.titleInput.readOnly = true;
-                
-                this.titleInput.addEventListener('input', (e) => { this.data.title = e.target.value; this.api.onChange(); });
-                this.titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace' && this.titleInput.value === '') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
-                    }
-                });
-                
-                const controls = createEl('div', 'tool-controls');
+                let controls = [];
                 if (!this.readOnly) {
                     this.colorPicker = createEl('input', '', { type: 'color', value: this.currentColor, style: 'width: 28px; height: 28px; border: none; padding: 0; background: transparent; cursor: pointer; display: none;' });
                     this.colorPicker.addEventListener('input', (e) => { this.currentColor = e.target.value; });
@@ -1247,20 +976,16 @@
                     
                     this.lockBtn = createEl('button', 'tool-icon-btn', { innerHTML: this.data.isLocked ? ICONS.lock : ICONS.unlock });
                     this.lockBtn.onclick = () => { this.data.isLocked = !this.data.isLocked; this.updateInteractions(); this.api.onChange(); };
-                    
-                    controls.append(this.colorPicker, this.drawBtn, this.lockBtn);
+                    controls.push(this.colorPicker, this.drawBtn, this.lockBtn);
                 }
-                header.append(this.titleInput, controls);
-                this.wrapper.appendChild(header); 
+                
+                this.wrapper.appendChild(this.buildHeader(controls)); 
                 this.renderUniversalCanvas();
                 return this.wrapper;
             }
-            
-            focus() { if(this.titleInput) this.titleInput.focus(); }
 
             renderUniversalCanvas() {
                 if (this.map) { this.map.remove(); this.map = null; }
-                
                 this.canvasWrapper = createEl('div', '', { style: 'position: relative; width: 100%; height: 400px;' });
                 this.mediaContainer = createEl('div', 'leaflet-container', {style: 'width: 100%; height: 100%; display: block; z-index: 1; border: none;'}); 
                 this.drawOverlay = createEl('div', '', {style: 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; display: none; touch-action: none; cursor: crosshair;'});
@@ -1271,17 +996,13 @@
                 requestAnimationFrame(() => {
                     if (!this.mediaContainer.isConnected) return;
                     this.setupMap();
-                    
-                    this.renderExistingLines(); 
-                    this.initDrawingTracker(); 
-                    this.updateInteractions();
-                    
+                    this.renderExistingLines(); this.initDrawingTracker(); this.updateInteractions();
                     this.map.on('moveend', () => this.api.onChange());
                     setTimeout(() => { if (this.map) this.map.invalidateSize(); }, 100);
                 });
             }
 
-            setupMap() {} // Implemented by specific subclasses
+            setupMap() {}
 
             renderExistingLines() {
                 this.lineLayers.forEach(layer => this.map.removeLayer(layer)); this.lineLayers = [];
@@ -1294,40 +1015,29 @@
                 
                 this.drawOverlay.addEventListener('pointerdown', (e) => {
                     if (!this.data.isDrawingActive || !this.data.isLocked) return; 
-                    isPointerDown = true; 
-                    this.drawOverlay.setPointerCapture(e.pointerId);
-                    
+                    isPointerDown = true; this.drawOverlay.setPointerCapture(e.pointerId);
                     const rect = this.drawOverlay.getBoundingClientRect();
                     const latlng = this.map.containerPointToLatLng([e.clientX - rect.left, e.clientY - rect.top]);
-                    
                     this.currentPoints = [latlng];
                     this.currentPolyline = L.polyline(this.currentPoints, { color: this.currentColor, weight: 4, lineCap: 'round', lineJoin: 'round', smoothFactor: 1.5 }).addTo(this.map);
                 });
                 
                 this.drawOverlay.addEventListener('pointermove', (e) => {
                     if (!this.data.isDrawingActive || !isPointerDown || !this.currentPolyline) return;
-                    
                     const rect = this.drawOverlay.getBoundingClientRect();
                     const latlng = this.map.containerPointToLatLng([e.clientX - rect.left, e.clientY - rect.top]);
-                    
-                    this.currentPoints.push(latlng);
-                    this.currentPolyline.setLatLngs(this.currentPoints);
+                    this.currentPoints.push(latlng); this.currentPolyline.setLatLngs(this.currentPoints);
                 });
                 
                 const endDraw = (e) => {
                     if (!isPointerDown) return; 
-                    isPointerDown = false; 
-                    this.drawOverlay.releasePointerCapture(e.pointerId);
+                    isPointerDown = false; this.drawOverlay.releasePointerCapture(e.pointerId);
                     if (!this.currentPolyline || !this.data.isDrawingActive) return;
                     this.data.lines.push({ color: this.currentColor, weight: 4, points: this.currentPoints.map(p => [p.lat, p.lng]) });
-                    this.lineLayers.push(this.currentPolyline); 
-                    this.currentPolyline = null; 
-                    this.currentPoints = []; 
-                    this.api.onChange();
+                    this.lineLayers.push(this.currentPolyline); this.currentPolyline = null; this.currentPoints = []; this.api.onChange();
                 };
                 
-                this.drawOverlay.addEventListener('pointerup', endDraw);
-                this.drawOverlay.addEventListener('pointercancel', endDraw);
+                this.drawOverlay.addEventListener('pointerup', endDraw); this.drawOverlay.addEventListener('pointercancel', endDraw);
             }
 
             updateInteractions() {
@@ -1346,23 +1056,18 @@
                     if (this.lockBtn) this.lockBtn.innerHTML = ICONS.lock;
                     if (this.drawBtn) { 
                         this.drawBtn.style.display = 'flex'; this.colorPicker.style.display = 'block'; 
-                        if (this.data.isDrawingActive) {
-                            if (this.drawOverlay) this.drawOverlay.style.display = 'block';
-                            this.drawBtn.classList.add('active');
-                        } else {
-                            if (this.drawOverlay) this.drawOverlay.style.display = 'none';
-                            this.drawBtn.classList.remove('active');
-                        }
+                        if (this.data.isDrawingActive) { if (this.drawOverlay) this.drawOverlay.style.display = 'block'; this.drawBtn.classList.add('active'); } 
+                        else { if (this.drawOverlay) this.drawOverlay.style.display = 'none'; this.drawBtn.classList.remove('active'); }
                     }
                 }
             }
 
             save() { if (this.map) { const center = this.map.getCenter(); this.data.lat = center.lat; this.data.lng = center.lng; this.data.zoom = this.map.getZoom(); } return this.data; }
-            destroy() { if (this.map) { this.map.remove(); this.map = null; } }
+            destroy() { super.destroy(); if (this.map) { this.map.remove(); this.map = null; } }
         }
 
         class MapTool extends BaseCanvasTool {
-            getDefaultData(data) { return { lat: data.lat || 51.505, lng: data.lng || -0.09, zoom: data.zoom || 13 }; }
+            getCanvasDefaultData(data) { return { lat: data?.lat || 51.505, lng: data?.lng || -0.09, zoom: data?.zoom || 13 }; }
             getPlaceholder() { return 'MAP TITLE...'; }
             setupMap() {
                 this.map = L.map(this.mediaContainer, { zoomControl: false, attributionControl: false }).setView([this.data.lat, this.data.lng], this.data.zoom);
@@ -1372,7 +1077,7 @@
         }
 
         class BlankCanvasTool extends BaseCanvasTool {
-            getDefaultData(data) { return { lat: data.lat || 0, lng: data.lng || 0, zoom: data.zoom || 0 }; }
+            getCanvasDefaultData(data) { return { lat: data?.lat || 0, lng: data?.lng || 0, zoom: data?.zoom || 0 }; }
             getPlaceholder() { return 'CANVAS TITLE...'; }
             setupMap() {
                 this.map = L.map(this.mediaContainer, { crs: L.CRS.Simple, zoomControl: false, attributionControl: false, minZoom: -4 });
@@ -1381,14 +1086,7 @@
         }
 
         class PhotoTool extends BaseCanvasTool {
-            getDefaultData(data) { 
-                return { 
-                    lat: data.lat || 0, lng: data.lng || 0, zoom: data.zoom || 0, 
-                    baseImage: data.baseImage || null, 
-                    imgWidth: data.imgWidth || null, imgHeight: data.imgHeight || null, 
-                    hasInitializedView: data.hasInitializedView || false 
-                }; 
-            }
+            getCanvasDefaultData(data) { return { lat: data?.lat || 0, lng: data?.lng || 0, zoom: data?.zoom || 0, baseImage: data?.baseImage || null, imgWidth: data?.imgWidth || null, imgHeight: data?.imgHeight || null, hasInitializedView: data?.hasInitializedView || false }; }
             getPlaceholder() { return 'PHOTO TITLE...'; }
             needsSetup() { return !this.data.baseImage; }
             
@@ -1396,15 +1094,9 @@
                 const header = createEl('div', 'tool-header');
                 const titleInput = createEl('input', 'tool-title-input', { placeholder: 'UPLOAD PHOTO...', readOnly: true });
                 titleInput.addEventListener('keydown', e => {
-                    if (e.key === 'Backspace') {
-                        e.preventDefault();
-                        const idx = this.api.getIndex(this);
-                        this.api.deleteBlock(idx);
-                        if (idx > 0) this.api.focus(idx - 1);
-                    }
+                    if (e.key === 'Backspace') { e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1); }
                 });
-                header.append(titleInput);
-                this.wrapper.appendChild(header);
+                header.append(titleInput); this.wrapper.appendChild(header);
 
                 const body = createEl('div', '', {style: 'padding: 24px; text-align: center; border: 1px dashed var(--border-color); cursor: pointer;'});
                 body.innerHTML = '<div style="margin: 0 auto; width: 32px; height: 32px;">' + ICONS.image + '</div><div style="font-weight: bold; margin-top: 8px;">TAP TO UPLOAD</div>';
@@ -1416,32 +1108,20 @@
                         const reader = new FileReader();
                         reader.onload = (re) => { 
                             const img = new Image();
-                            img.onload = () => { 
-                                this.data.baseImage = re.target.result; 
-                                this.data.imgWidth = img.width; 
-                                this.data.imgHeight = img.height; 
-                                this.render(); 
-                                this.api.onChange(); 
-                            };
+                            img.onload = () => { this.data.baseImage = re.target.result; this.data.imgWidth = img.width; this.data.imgHeight = img.height; this.render(); this.api.onChange(); };
                             img.src = re.target.result;
                         }; reader.readAsDataURL(file);
                     }
                 };
-                this.wrapper.append(body, fileInput);
-                setTimeout(() => titleInput.focus(), 0);
+                this.wrapper.append(body, fileInput); setTimeout(() => titleInput.focus(), 0);
             }
 
             setupMap() {
                 this.map = L.map(this.mediaContainer, { crs: L.CRS.Simple, zoomControl: false, attributionControl: false, minZoom: -4 });
                 const bounds = [[0, 0], [this.data.imgHeight || 600, this.data.imgWidth || 800]];
                 L.imageOverlay(this.data.baseImage, bounds).addTo(this.map);
-                if (!this.data.hasInitializedView && !this.readOnly) { 
-                    this.map.fitBounds(bounds); 
-                    this.data.hasInitializedView = true; 
-                    this.api.onChange(); 
-                } else { 
-                    this.map.setView([this.data.lat, this.data.lng], this.data.zoom); 
-                }
+                if (!this.data.hasInitializedView && !this.readOnly) { this.map.fitBounds(bounds); this.data.hasInitializedView = true; this.api.onChange(); } 
+                else { this.map.setView([this.data.lat, this.data.lng], this.data.zoom); }
             }
         }
 
@@ -1463,10 +1143,8 @@
                 this.onChange = options.onChange || function(){};
                 this.blocks = []; 
                 
-                // Slash Menu Setup
                 this.slashMenuEl = document.getElementById('slash-menu');
-                this.slashActiveBlock = null;
-                this.slashSelectedIndex = 0;
+                this.slashActiveBlock = null; this.slashSelectedIndex = 0;
                 this.slashOptions = [
                     {id: 'map', icon: ICONS.map, name: 'Map Location', keywords: 'map location geography'},
                     {id: 'photo', icon: ICONS.image, name: 'Photo Annotation', keywords: 'photo image picture paint draw'},
@@ -1481,8 +1159,8 @@
                 
                 this.container.innerHTML = '';
                 const dataBlocks = options.data?.blocks || [];
-                if (dataBlocks.length === 0 && !this.readOnly) { this.insertBlock('paragraph', {}, 0, false); } 
-                else { dataBlocks.forEach((b, i) => this.insertBlock(b.type, b.data, i, false, b.dynamicInfo)); }
+                if (dataBlocks.length === 0 && !this.readOnly) this.insertBlock('paragraph', {}, 0, false); 
+                else dataBlocks.forEach((b, i) => this.insertBlock(b.type, b.data, i, false, b.dynamicInfo));
 
                 document.addEventListener('click', (e) => { if (!this.slashMenuEl.contains(e.target)) this.hideSlashMenu(); });
             }
@@ -1495,9 +1173,7 @@
                     getBlockCount: () => this.blocks.length,
                     insertBlock: (type, data, index, focus) => {
                         const block = this.insertBlock(type, data, index, focus);
-                        if (!['paragraph', 'header', 'list', 'checklist', 'quote', 'table'].includes(type) && !this.readOnly) {
-                            this.insertBlock('paragraph', {}, index + 1, false);
-                        }
+                        if (!['paragraph', 'header', 'list', 'checklist', 'quote', 'table'].includes(type) && !this.readOnly) this.insertBlock('paragraph', {}, index + 1, false);
                         return block;
                     },
                     deleteBlock: (index) => this.deleteBlock(index),
@@ -1513,17 +1189,13 @@
             showSlashMenu(blockInstance, rect, query) {
                 this.slashActiveBlock = blockInstance;
                 this.slashMenuEl.style.top = `${rect.bottom + window.scrollY + 5}px`;
-                let leftPos = rect.left; if (leftPos < 16) leftPos = 16;
-                this.slashMenuEl.style.left = `${leftPos}px`;
-                
+                this.slashMenuEl.style.left = `${Math.max(rect.left, 16)}px`;
                 this.slashFiltered = this.slashOptions.filter(o => o.name.toLowerCase().includes(query) || o.keywords.includes(query));
                 if (this.slashFiltered.length === 0) { this.hideSlashMenu(); return; }
-                
                 this.slashSelectedIndex = 0; this.renderSlashMenu(); this.slashMenuEl.classList.add('active');
             }
 
             hideSlashMenu() { this.slashMenuEl.classList.remove('active'); this.slashActiveBlock = null; }
-
             renderSlashMenu() {
                 this.slashMenuEl.innerHTML = '';
                 this.slashFiltered.forEach((opt, idx) => {
@@ -1532,28 +1204,17 @@
                     this.slashMenuEl.appendChild(item);
                 });
             }
-
             slashNavigate(dir) {
-                this.slashSelectedIndex += dir;
-                if (this.slashSelectedIndex < 0) this.slashSelectedIndex = this.slashFiltered.length - 1;
-                if (this.slashSelectedIndex >= this.slashFiltered.length) this.slashSelectedIndex = 0;
-                this.renderSlashMenu();
-                const selectedEl = this.slashMenuEl.children[this.slashSelectedIndex];
+                this.slashSelectedIndex = (this.slashSelectedIndex + dir + this.slashFiltered.length) % this.slashFiltered.length;
+                this.renderSlashMenu(); const selectedEl = this.slashMenuEl.children[this.slashSelectedIndex];
                 if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
             }
-
             slashExecute(blockInstance) {
-                const selected = this.slashFiltered[this.slashSelectedIndex];
-                this.hideSlashMenu();
+                const selected = this.slashFiltered[this.slashSelectedIndex]; this.hideSlashMenu();
                 if (selected && blockInstance) {
                     const idx = this.createBlockAPI().getIndex(blockInstance);
-                    this.deleteBlock(idx); 
-                    this.insertBlock(selected.id, {}, idx, true);
-                    
-                    // Guarantee an empty paragraph below the widget so the user isn't stuck
-                    if (!this.readOnly) {
-                        this.insertBlock('paragraph', {}, idx + 1, false);
-                    }
+                    this.deleteBlock(idx); this.insertBlock(selected.id, {}, idx, true);
+                    if (!this.readOnly) this.insertBlock('paragraph', {}, idx + 1, false);
                 }
             }
 
@@ -1567,41 +1228,18 @@
                 const wrapper = createEl('div', `block-wrapper ${isBlockReadOnly ? 'is-readonly' : ''}`); 
                 wrapper.dataset.id = blockId;
                 
-                // --- Link read-only aggregated block to navigate to original source ---
                 if (isBlockReadOnly && dynamicInfo && dynamicInfo.source) {
-                    wrapper.onclick = (e) => {
-                        // Prevent jumping if interacting with nested components or links
-                        if (e.target.closest('a') || e.target.closest('button') || e.target.closest('input') || e.target.closest('.tool-controls')) return;
-                        window.loadVirtualPage(dynamicInfo.source);
-                    };
+                    wrapper.onclick = (e) => { if (!e.target.closest('a') && !e.target.closest('button') && !e.target.closest('input') && !e.target.closest('.tool-controls')) window.loadVirtualPage(dynamicInfo.source); };
                 }
 
                 let timeEl = createEl('div', 'block-time');
                 if (dynamicInfo) {
-                    let dateObj;
-                    if (dynamicInfo.timestamp) {
-                        dateObj = new Date(dynamicInfo.timestamp);
-                    } else {
-                        const [y, m, d] = dynamicInfo.source.split('-').map(Number);
-                        dateObj = new Date(y, m - 1, d, 12, 0); 
-                    }
-                    
-                    const dateStr = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-                    const timeStr = dateObj.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-                    
-                    timeEl = createEl('a', 'block-time v-link', { 
-                        textContent: `${dateStr} @ ${timeStr}`, 
-                        'data-target': dynamicInfo.source 
-                    });
-                    timeEl.title = 'Jump to Date';
-                    timeEl.onclick = (e) => { e.preventDefault(); window.loadVirtualPage(dynamicInfo.source); };
+                    const dateObj = dynamicInfo.timestamp ? new Date(dynamicInfo.timestamp) : new Date(...dynamicInfo.source.split('-').map((v, i) => i === 1 ? v - 1 : v), 12, 0);
+                    timeEl = createEl('a', 'block-time v-link', { textContent: `${dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} @ ${dateObj.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`, 'data-target': dynamicInfo.source });
+                    timeEl.title = 'Jump to Date'; timeEl.onclick = (e) => { e.preventDefault(); window.loadVirtualPage(dynamicInfo.source); };
                 } else {
-                    if (window.timestamps && window.timestamps[blockId]) {
-                        timeEl.textContent = new Date(window.timestamps[blockId]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-                    } else if (!this.readOnly && window.timestamps) {
-                        window.timestamps[blockId] = Date.now();
-                        timeEl.textContent = new Date(window.timestamps[blockId]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-                    }
+                    if (window.timestamps && window.timestamps[blockId]) timeEl.textContent = new Date(window.timestamps[blockId]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+                    else if (!this.readOnly && window.timestamps) { window.timestamps[blockId] = Date.now(); timeEl.textContent = new Date(window.timestamps[blockId]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); }
                 }
 
                 wrapper.append(createEl('div', 'block-content', {}, [instance.render()]), timeEl);
@@ -1622,34 +1260,22 @@
                 this.onChange();
             }
 
-            focus(index) { if (index >= 0 && index < this.blocks.length && typeof this.blocks[index].instance.focus === 'function') { this.blocks[index].instance.focus(); } }
+            focus(index) { if (index >= 0 && index < this.blocks.length && typeof this.blocks[index].instance.focus === 'function') this.blocks[index].instance.focus(); }
             
             async save() {
                 const output = [];
-                for (let block of this.blocks) { 
-                    if (block.dynamicInfo) continue; // DO NOT SAVE AGGREGATED MENTIONS BACK TO TIMELINE
-                    if (typeof block.instance.save === 'function') { 
-                        output.push({ id: block.id, type: block.type, data: await block.instance.save() }); 
-                    } 
-                }
+                for (let block of this.blocks) { if (!block.dynamicInfo && typeof block.instance.save === 'function') output.push({ id: block.id, type: block.type, data: await block.instance.save() }); }
                 return { blocks: output };
             }
             
-            destroy() { 
-                this.hideSlashMenu();
-                this.blocks.forEach(b => { if (typeof b.instance.destroy === 'function') b.instance.destroy(); }); 
-                this.container.innerHTML = ''; this.blocks = []; 
-            }
+            destroy() { this.hideSlashMenu(); this.blocks.forEach(b => { if (typeof b.instance.destroy === 'function') b.instance.destroy(); }); this.container.innerHTML = ''; this.blocks = []; }
         }
 
         // ============================================================================
         // CORE APP LIFECYCLE & ASYNC STORAGE QUEUE
         // ============================================================================
-        window.editor = null; 
-        window.timestamps = {};
-        let saveTimeout;
-        let activeSavePromise = Promise.resolve();
-        
+        window.editor = null; window.timestamps = {};
+        let saveTimeout; let activeSavePromise = Promise.resolve();
         let todayStr = getLocalYYYYMMDD(new Date()); 
         window.currentDateStr = todayStr;
 
@@ -1657,19 +1283,13 @@
 
         function executeSave(targetKey = window.currentDateStr) {
             if (!window.editor) return Promise.resolve();
-            
             activeSavePromise = activeSavePromise.then(async () => {
                 if (!window.editor) return; 
                 try {
-                    const outputData = await window.editor.save();
-                    outputData.timestamps = { ...window.timestamps };
+                    const outputData = await window.editor.save(); outputData.timestamps = { ...window.timestamps };
                     await appDB.save(targetKey, outputData);
-                    
                     const indicator = document.getElementById('save-indicator');
-                    if (indicator && !appDB.isMemoryOnly) { 
-                        indicator.classList.add('visible'); 
-                        setTimeout(() => indicator.classList.remove('visible'), 1500); 
-                    }
+                    if (indicator && !appDB.isMemoryOnly) { indicator.classList.add('visible'); setTimeout(() => indicator.classList.remove('visible'), 1500); }
                 } catch(e) { console.error("Save Error:", e); }
             });
             return activeSavePromise;
@@ -1678,9 +1298,8 @@
         function scheduleSave(immediate = false) {
             if (appDB.isMemoryOnly) return; 
             clearTimeout(saveTimeout);
-            const keyToSave = window.currentDateStr;
-            if (immediate) { executeSave(keyToSave); } 
-            else { saveTimeout = setTimeout(() => { executeSave(keyToSave); }, 800); }
+            if (immediate) executeSave(window.currentDateStr); 
+            else saveTimeout = setTimeout(() => { executeSave(window.currentDateStr); }, 800);
         }
 
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') scheduleSave(true); }); 
@@ -1689,42 +1308,31 @@
         document.getElementById('date-header').onclick = () => {
             scheduleSave(true); 
             let dateToOpen = new Date();
-            if (/^\d{4}-\d{2}-\d{2}$/.test(window.currentDateStr)) {
-                const [y, m, d] = window.currentDateStr.split('-').map(Number);
-                dateToOpen = new Date(y, m - 1, d);
-            }
+            if (/^\d{4}-\d{2}-\d{2}$/.test(window.currentDateStr)) { const [y, m, d] = window.currentDateStr.split('-').map(Number); dateToOpen = new Date(y, m - 1, d); }
             DatePicker.open(dateToOpen, (selectedDate) => {
                 const selectedStr = getLocalYYYYMMDD(selectedDate);
-                if (window.currentDateStr !== selectedStr) { window.loadVirtualPage(selectedStr); }
+                if (window.currentDateStr !== selectedStr) window.loadVirtualPage(selectedStr);
             }, { showTime: false, disableFuture: true, onlyNotes: false }); 
         };
 
         // ============================================================================
-        // VIRTUAL ROUTING
+        // VIRTUAL ROUTING & EDITOR INITIALIZATION
         // ============================================================================
         window.loadVirtualPage = async function(key) {
             const oldStorageKey = window.currentDateStr; 
+            let storageKey = key; let tagParts = [];
             
-            let storageKey = key;
-            let tagParts = [];
             if (key.startsWith('tag-')) {
-                const fullTag = key.substring(4);
-                tagParts = fullTag.split('.').filter(Boolean);
+                tagParts = key.substring(4).split('.').filter(Boolean);
                 storageKey = 'tag-' + tagParts[0]; 
             }
             
             window.currentDateStr = storageKey;
-            
             const dateHeader = document.getElementById('date-header');
-            const isDate = /^\d{4}-\d{2}-\d{2}$/.test(storageKey);
             
-            if (isDate) {
-                dateHeader.innerHTML = getDisplayDate(storageKey);
-            } else if (storageKey.startsWith('tag-')) {
-                dateHeader.innerHTML = '#' + tagParts[0].toUpperCase();
-            } else {
-                dateHeader.innerHTML = storageKey.toUpperCase();
-            }
+            if (/^\d{4}-\d{2}-\d{2}$/.test(storageKey)) dateHeader.innerHTML = getDisplayDate(storageKey);
+            else if (storageKey.startsWith('tag-')) dateHeader.innerHTML = '#' + tagParts[0].toUpperCase();
+            else dateHeader.innerHTML = storageKey.toUpperCase();
 
             await initEditor(storageKey, oldStorageKey, tagParts);
             
@@ -1738,15 +1346,8 @@
             }
         };
 
-        // ============================================================================
-        // UNIFIED EDITOR INITIALIZATION (MENTIONS WOVEN DIRECTLY)
-        // ============================================================================
         async function initEditor(newStorageKey, oldStorageKey, tagParts = []) {
-            if (window.editor) { 
-                await executeSave(oldStorageKey); 
-                window.editor.destroy(); 
-                window.editor = null; 
-            }
+            if (window.editor) { await executeSave(oldStorageKey); window.editor.destroy(); window.editor = null; }
             
             const isEditable = /^\d{4}-\d{2}-\d{2}$/.test(newStorageKey) ? newStorageKey === todayStr : true; 
             let cachedData = appDB.cache[newStorageKey];
@@ -1754,135 +1355,66 @@
             
             window.timestamps = editorData.timestamps || {};
 
-            // If it's a Persona Tag Document, dynamically aggregate timeline mentions into the editor state
             if (newStorageKey.startsWith('tag-')) {
                 const baseTag = tagParts[0] || newStorageKey.substring(4);
-                const days = Object.keys(appDB.cache).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort().reverse();
-                
                 const safeBaseTag = baseTag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(`(?:^|\\s)#${safeBaseTag}((?:\\.[a-zA-Z0-9_]+)*)\\b`, 'gi');
-                
                 let mentionsByPath = { '': [] };
                 
-                days.forEach(day => {
+                Object.keys(appDB.cache).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).sort().reverse().forEach(day => {
                     const dayData = appDB.cache[day];
                     if (!dayData.blocks) return;
                     dayData.blocks.forEach(b => {
-                        let text = b.data.text || '';
-                        if (b.data.items) text = b.data.items.map(i => i.text || i.content).join(' ');
-                        if (b.data.title) text += ' ' + b.data.title;
-                        const cleanText = text.replace(/<[^>]*>?/gm, ' ');
-                        
-                        let match;
-                        let matchedPaths = new Set();
+                        let match; let matchedPaths = new Set();
+                        const cleanText = extractBlockText(b);
                         regex.lastIndex = 0;
-                        while ((match = regex.exec(cleanText)) !== null) {
-                            matchedPaths.add(match[1] ? match[1].substring(1).toLowerCase() : '');
-                        }
+                        while ((match = regex.exec(cleanText)) !== null) matchedPaths.add(match[1] ? match[1].substring(1).toLowerCase() : '');
                         matchedPaths.forEach(path => {
                             if (!mentionsByPath[path]) mentionsByPath[path] = [];
-                            if (!mentionsByPath[path].some(m => m.block.id === b.id)) {
-                                mentionsByPath[path].push({ day, block: b, timestamp: dayData.timestamps?.[b.id] });
-                            }
+                            if (!mentionsByPath[path].some(m => m.block.id === b.id)) mentionsByPath[path].push({ day, block: b, timestamp: dayData.timestamps?.[b.id] });
                         });
                     });
                 });
 
-                // Guarantee there is at least one editable paragraph at the top for notes
-                if (editorData.blocks.length === 0) {
-                    editorData.blocks.push({ type: 'paragraph', data: {}, id: crypto.randomUUID() });
-                }
+                if (editorData.blocks.length === 0) editorData.blocks.push({ type: 'paragraph', data: {}, id: crypto.randomUUID() });
 
-                // This maps the H2/H3 headers. 
-                // We create them permanently alongside empty paragraphs so the user can easily add standard notes to that section.
                 const scaffoldHeading = (path) => {
-                    if (!path) {
-                        const firstH2Idx = editorData.blocks.findIndex(b => b.type === 'header' && b.data.level === 2);
-                        return firstH2Idx !== -1 ? firstH2Idx : editorData.blocks.length; 
-                    }
-                    
-                    const parts = path.split('.');
-                    let searchStartIdx = 0;
-                    let searchEndIdx = editorData.blocks.length;
-                    let currentLevel = 2; // Tag dot extensions start at H2
+                    if (!path) { const idx = editorData.blocks.findIndex(b => b.type === 'header' && b.data.level === 2); return idx !== -1 ? idx : editorData.blocks.length; }
+                    const parts = path.split('.'); let searchStartIdx = 0; let searchEndIdx = editorData.blocks.length; let currentLevel = 2;
                     
                     for(let i=0; i<parts.length; i++) {
-                        const partName = parts[i].toUpperCase();
-                        let existingIdx = -1;
-                        
-                        // Search for standard, saved user headings that match
+                        const partName = parts[i].toUpperCase(); let existingIdx = -1;
                         for (let j = searchStartIdx; j < searchEndIdx; j++) {
                             const b = editorData.blocks[j];
-                            if (b.type === 'header' && b.data.level === currentLevel && !b.dynamicInfo) {
-                                const text = (b.data.text || '').replace(/<[^>]*>?/gm, '').trim().toUpperCase();
-                                if (text === partName || text.startsWith(partName + ' ')) {
-                                    existingIdx = j;
-                                    break;
-                                }
-                            }
+                            if (b.type === 'header' && b.data.level === currentLevel && !b.dynamicInfo && (b.data.text || '').replace(/<[^>]*>?/gm, '').trim().toUpperCase().startsWith(partName)) { existingIdx = j; break; }
                         }
                         
                         if (existingIdx !== -1) {
-                            // Heading exists! Find the bottom of this specific section.
-                            searchStartIdx = existingIdx + 1;
-                            let nextHeaderIdx = -1;
-                            for (let j = searchStartIdx; j < editorData.blocks.length; j++) {
-                                const b = editorData.blocks[j];
-                                if (b.type === 'header' && b.data.level <= currentLevel && !b.dynamicInfo) {
-                                    nextHeaderIdx = j;
-                                    break;
-                                }
-                            }
+                            searchStartIdx = existingIdx + 1; let nextHeaderIdx = -1;
+                            for (let j = searchStartIdx; j < editorData.blocks.length; j++) { if (editorData.blocks[j].type === 'header' && editorData.blocks[j].data.level <= currentLevel && !editorData.blocks[j].dynamicInfo) { nextHeaderIdx = j; break; } }
                             searchEndIdx = nextHeaderIdx !== -1 ? nextHeaderIdx : editorData.blocks.length;
                         } else {
-                            // Creating the heading permanently inside the tag page so notes can be added below it
-                            const newId = crypto.randomUUID();
-                            editorData.blocks.splice(searchEndIdx, 0, { 
-                                type: 'header', 
-                                data: { text: partName, level: currentLevel }, 
-                                id: newId 
-                            });
-                            window.timestamps[newId] = Date.now();
-                            
-                            // Injecting an empty, editable paragraph specifically for user to type notes
-                            const pId = crypto.randomUUID();
-                            editorData.blocks.splice(searchEndIdx + 1, 0, { 
-                                type: 'paragraph', 
-                                data: {}, 
-                                id: pId 
-                            });
-                            window.timestamps[pId] = Date.now();
-
-                            searchStartIdx = searchEndIdx + 2;
-                            searchEndIdx = searchEndIdx + 2;
+                            const newId = crypto.randomUUID(); const pId = crypto.randomUUID();
+                            editorData.blocks.splice(searchEndIdx, 0, { type: 'header', data: { text: partName, level: currentLevel }, id: newId }, { type: 'paragraph', data: {}, id: pId });
+                            window.timestamps[newId] = Date.now(); window.timestamps[pId] = Date.now();
+                            searchStartIdx = searchEndIdx + 2; searchEndIdx = searchEndIdx + 2;
                         }
                         currentLevel++;
                     }
-                    return searchEndIdx; // Dynamic mentions will be appended right here (the bottom of the section)
+                    return searchEndIdx;
                 };
 
-                // Insert all found mentions seamlessly as standard text blocks into the document
                 Object.keys(mentionsByPath).sort().forEach(path => {
                     let insertIdx = scaffoldHeading(path);
-                    mentionsByPath[path].sort((a,b) => {
-                        const tA = a.timestamp || new Date(a.day).getTime();
-                        const tB = b.timestamp || new Date(b.day).getTime();
-                        return tB - tA; // Chronological order inside the section
-                    }).forEach(m => {
+                    mentionsByPath[path].sort((a,b) => (b.timestamp || new Date(b.day).getTime()) - (a.timestamp || new Date(a.day).getTime())).forEach(m => {
                         const blockClone = JSON.parse(JSON.stringify(m.block));
-                        blockClone.dynamicInfo = { source: m.day, timestamp: m.timestamp };
-                        blockClone.id = 'dyn-' + crypto.randomUUID();
-                        editorData.blocks.splice(insertIdx, 0, blockClone);
-                        insertIdx++;
+                        blockClone.dynamicInfo = { source: m.day, timestamp: m.timestamp }; blockClone.id = 'dyn-' + crypto.randomUUID();
+                        editorData.blocks.splice(insertIdx, 0, blockClone); insertIdx++;
                     });
                 });
             }
 
-            window.editor = new BlockManager('editor-container', { 
-                readOnly: !isEditable, 
-                data: editorData, 
-                onChange: () => { if (isEditable) scheduleSave(); } 
-            });
+            window.editor = new BlockManager('editor-container', { readOnly: !isEditable, data: editorData, onChange: () => { if (isEditable) scheduleSave(); } });
         }
 
         appDB.init().then(() => { window.loadVirtualPage(window.currentDateStr); });
