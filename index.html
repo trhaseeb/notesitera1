@@ -39,7 +39,6 @@
         ::-webkit-scrollbar { display: none; }
         ::selection { background: var(--text-color) !important; color: var(--bg-color); }
         
-        /* FIX: Exclude Leaflet SVGs from being forced to 18px, otherwise drawing lines disappear */
         svg:not(.leaflet-container svg) { flex-shrink: 0; width: 18px; height: 18px; }
 
         /* --- STYLISH BRUTALIST HEADER --- */
@@ -150,7 +149,10 @@
         </div>
         
         <div id="editor-container"></div>
+        
+        <!-- Slash & Tag Menus -->
         <div id="slash-menu" class="slash-menu"></div>
+        <div id="tag-menu" class="slash-menu"></div>
     </div>
 
     <!-- Modals -->
@@ -308,7 +310,7 @@
         })();
 
         // ============================================================================
-        // TEXT PARSERS (PERSONAS & HASHTAGS) & UTILS
+        // TEXT PARSERS, TAGS (PERSONAS) & UTILS
         // ============================================================================
         function extractBlockText(block) {
             let text = block.type + " ";
@@ -318,6 +320,57 @@
             return text.replace(/<[^>]*>?/gm, ' ').trim();
         }
 
+        // --- CARET & SELECTION HELPERS FOR SEAMLESS TYPING ---
+        function getCaretCoordinates() {
+            const sel = window.getSelection();
+            if (sel.rangeCount === 0) return null;
+            const range = sel.getRangeAt(0).cloneRange();
+            range.collapse(false);
+            const rect = range.getBoundingClientRect();
+            if (rect.width === 0 && rect.height === 0) {
+                const span = document.createElement('span'); range.insertNode(span);
+                const fallback = span.getBoundingClientRect(); span.parentNode.removeChild(span); return fallback;
+            }
+            return rect;
+        }
+
+        function saveSelection(containerEl) {
+            const sel = window.getSelection();
+            if (sel.rangeCount === 0) return null;
+            const range = sel.getRangeAt(0);
+            if (!containerEl.contains(range.startContainer)) return null;
+            const preSelectionRange = range.cloneRange(); preSelectionRange.selectNodeContents(containerEl);
+            preSelectionRange.setEnd(range.startContainer, range.startOffset);
+            const start = preSelectionRange.toString().length;
+            return { start: start, end: start + range.toString().length };
+        }
+
+        function restoreSelection(containerEl, savedSel) {
+            if (!savedSel) return;
+            let charIndex = 0, range = document.createRange(); range.setStart(containerEl, 0); range.collapse(true);
+            let nodeStack = [containerEl], node, foundStart = false, stop = false;
+            while (!stop && (node = nodeStack.pop())) {
+                if (node.nodeType === 3) {
+                    const nextCharIndex = charIndex + node.length;
+                    if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) { range.setStart(node, savedSel.start - charIndex); foundStart = true; }
+                    if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) { range.setEnd(node, savedSel.end - charIndex); stop = true; }
+                    charIndex = nextCharIndex;
+                } else { let i = node.childNodes.length; while (i--) nodeStack.push(node.childNodes[i]); }
+            }
+            const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        }
+
+        // --- TAG EXTRACTION FOR AUTOCOMPLETE ---
+        function getAllTags() {
+            const tags = new Set();
+            const regex = /(?:^|\s)(#[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*)/g;
+            const scanText = (text) => { let match; regex.lastIndex = 0; while ((match = regex.exec(text)) !== null) tags.add(match[1]); };
+            Object.values(appDB.cache).forEach(day => { if (!day.blocks) return; day.blocks.forEach(b => scanText(extractBlockText(b))); });
+            if (window.editor) { window.editor.blocks.forEach(b => { if (b.instance && b.instance.el) scanText(b.instance.el.textContent || ''); else scanText(extractBlockText({ type: b.type, data: typeof b.instance.save === 'function' ? b.instance.save() : {} })); }); }
+            return Array.from(tags).sort();
+        }
+
+        // --- LINKIFICATION ENGINE ---
         function linkifyTextNode(el) {
             if (!el) return false;
             const html = el.innerHTML;
@@ -347,6 +400,60 @@
             if (changed) el.innerHTML = temp.innerHTML;
             return changed;
         }
+
+        function linkifyAndPreserveCaret(el) {
+            const saved = saveSelection(el);
+            const changed = linkifyTextNode(el);
+            if (changed && saved) restoreSelection(el, saved);
+            return changed;
+        }
+
+        // --- UNIFIED TEXT INTERACTION HANDLER (Autocomplete & Spacing) ---
+        function handleTextInteraction(e, el, api, blockInstance) {
+            if (e.type === 'input') {
+                // Space creates instant tags
+                if (e.data === ' ' || (e.inputType === 'insertText' && e.data === ' ')) {
+                    api.hideTagMenu();
+                    if (linkifyAndPreserveCaret(el)) api.onChange();
+                    return;
+                }
+
+                // Autocomplete Menu Check
+                const sel = window.getSelection();
+                if (sel.rangeCount > 0) {
+                    const node = sel.focusNode;
+                    if (node && node.nodeType === 3) {
+                        const textBeforeCaret = node.nodeValue.substring(0, sel.focusOffset);
+                        const match = textBeforeCaret.match(/(?:^|\s)(#[a-zA-Z0-9_.]+)$/);
+                        
+                        if (match) {
+                            const query = match[1];
+                            const rect = getCaretCoordinates() || el.getBoundingClientRect();
+                            api.showTagMenu(blockInstance, rect, query, (selectedTag) => {
+                                node.nodeValue = textBeforeCaret.substring(0, textBeforeCaret.length - query.length) + selectedTag + ' ' + node.nodeValue.substring(sel.focusOffset);
+                                const newOffset = textBeforeCaret.length - query.length + selectedTag.length + 1;
+                                const newRange = document.createRange(); newRange.setStart(node, newOffset); newRange.collapse(true);
+                                sel.removeAllRanges(); sel.addRange(newRange);
+                                linkifyAndPreserveCaret(el); api.onChange();
+                            });
+                        } else {
+                            api.hideTagMenu();
+                        }
+                    }
+                }
+            }
+        }
+
+        function handleTagMenuKeydown(e, api) {
+            if (api.isTagMenuVisible()) {
+                if (e.key === 'ArrowDown') { e.preventDefault(); api.tagNavigate(1); return true; }
+                if (e.key === 'ArrowUp') { e.preventDefault(); api.tagNavigate(-1); return true; }
+                if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); api.tagExecute(); return true; }
+                if (e.key === 'Escape') { e.preventDefault(); api.hideTagMenu(); return true; }
+            }
+            return false;
+        }
+
 
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.v-link');
@@ -468,10 +575,12 @@
                 this.el = createEl('div', 'native-text-block', { contentEditable: !this.readOnly, innerHTML: this.data.text || '', 'data-placeholder': "Type '/' for widgets, or use markdown..." });
                 this.el.addEventListener('keydown', this.handleKeydown.bind(this));
                 this.el.addEventListener('input', this.handleInput.bind(this));
-                this.el.addEventListener('blur', () => { setTimeout(() => this.api.hideSlashMenu(), 150); if (linkifyTextNode(this.el)) this.api.onChange(); });
+                this.el.addEventListener('blur', () => { setTimeout(() => { this.api.hideSlashMenu(); this.api.hideTagMenu(); }, 150); if (linkifyTextNode(this.el)) this.api.onChange(); });
                 return this.el;
             }
-            handleInput() {
+            handleInput(e) {
+                handleTextInteraction(e, this.el, this.api, this);
+                
                 const rawText = this.el.textContent.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\u00A0/g, ' ');
                 const isTagPage = window.currentDateStr && window.currentDateStr.startsWith('tag-');
                 
@@ -491,6 +600,8 @@
             }
             transformTo(type, data) { const idx = this.api.getIndex(this); this.api.deleteBlock(idx); this.api.insertBlock(type, data, idx, true); }
             handleKeydown(e) {
+                if (handleTagMenuKeydown(e, this.api)) return;
+                
                 if (this.api.isSlashMenuVisible()) {
                     if (e.key === 'ArrowDown') { e.preventDefault(); this.api.slashNavigate(1); return; }
                     if (e.key === 'ArrowUp') { e.preventDefault(); this.api.slashNavigate(-1); return; }
@@ -509,11 +620,12 @@
             render() {
                 this.el = createEl('div', `native-text-block native-header-${this.level}`, { contentEditable: !this.readOnly, innerHTML: this.data.text || '', 'data-placeholder': `HEADING ${this.level}...` });
                 this.el.addEventListener('keydown', (e) => {
+                    if (handleTagMenuKeydown(e, this.api)) return;
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); return; }
                     handleArrowNavigation(e, this.api, this, this.el); handleTextBackspace(e, this.api, this, this.el, 'header');
                 });
-                this.el.addEventListener('input', () => this.api.onChange());
-                this.el.addEventListener('blur', () => { if (linkifyTextNode(this.el)) this.api.onChange(); });
+                this.el.addEventListener('input', (e) => { handleTextInteraction(e, this.el, this.api, this); this.api.onChange(); });
+                this.el.addEventListener('blur', () => { setTimeout(() => this.api.hideTagMenu(), 150); if (linkifyTextNode(this.el)) this.api.onChange(); });
                 return this.el;
             }
             focus(atEnd = false) { this.el.focus(); if (atEnd) moveCaretToEnd(this.el); }
@@ -525,11 +637,12 @@
             render() {
                 this.el = createEl('blockquote', 'native-quote native-text-block', { contentEditable: !this.readOnly, innerHTML: this.data.text || '', 'data-placeholder': 'Quote...' });
                 this.el.addEventListener('keydown', (e) => {
+                    if (handleTagMenuKeydown(e, this.api)) return;
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); return; }
                     handleArrowNavigation(e, this.api, this, this.el); handleTextBackspace(e, this.api, this, this.el, 'quote');
                 });
-                this.el.addEventListener('input', () => this.api.onChange());
-                this.el.addEventListener('blur', () => { if (linkifyTextNode(this.el)) this.api.onChange(); });
+                this.el.addEventListener('input', (e) => { handleTextInteraction(e, this.el, this.api, this); this.api.onChange(); });
+                this.el.addEventListener('blur', () => { setTimeout(() => this.api.hideTagMenu(), 150); if (linkifyTextNode(this.el)) this.api.onChange(); });
                 return this.el;
             }
             focus(atEnd = false) { this.el.focus(); if (atEnd) moveCaretToEnd(this.el); }
@@ -556,9 +669,10 @@
                     const tr = createEl('tr');
                     row.forEach((cell, colIndex) => {
                         const td = createEl('td', '', { contentEditable: !this.readOnly, innerHTML: cell });
-                        td.addEventListener('input', () => { this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); });
-                        td.addEventListener('blur', () => { if(linkifyTextNode(td)) { this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); } });
+                        td.addEventListener('input', (e) => { handleTextInteraction(e, td, this.api, this); this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); });
+                        td.addEventListener('blur', () => { setTimeout(() => this.api.hideTagMenu(), 150); if(linkifyTextNode(td)) { this.rows[rowIndex][colIndex] = td.innerHTML; this.api.onChange(); } });
                         td.addEventListener('keydown', (e) => {
+                            if (handleTagMenuKeydown(e, this.api)) return;
                             if (e.key === 'ArrowUp' && rowIndex === 0) { const idx = this.api.getIndex(this); if (idx > 0) this.api.focus(idx - 1, true); }
                             if (e.key === 'ArrowDown' && rowIndex === this.rows.length - 1) { const idx = this.api.getIndex(this); if (idx < this.api.getBlockCount() - 1) this.api.focus(idx + 1); }
                             if (e.key === 'Backspace' && td.innerText.replace(/[\u200B-\u200D\uFEFF]/g, '').trim() === '' && this.rows.length === 1 && this.rows[0].length === 1) { e.preventDefault(); const idx = this.api.getIndex(this); this.api.deleteBlock(idx); if (idx > 0) this.api.focus(idx - 1, true); }
@@ -581,9 +695,10 @@
                 const text = createEl('div', `native-text-block checklist-text ${item.checked ? 'checked' : ''}`, { contentEditable: !this.readOnly, innerHTML: item.text });
                 
                 checkbox.addEventListener('change', () => { item.checked = checkbox.checked; text.classList.toggle('checked', item.checked); this.api.onChange(); });
-                text.addEventListener('input', () => { item.text = text.innerHTML; this.api.onChange(); });
-                text.addEventListener('blur', () => { if(linkifyTextNode(text)) { item.text = text.innerHTML; this.api.onChange(); } });
+                text.addEventListener('input', (e) => { handleTextInteraction(e, text, this.api, this); item.text = text.innerHTML; this.api.onChange(); });
+                text.addEventListener('blur', () => { setTimeout(() => this.api.hideTagMenu(), 150); if(linkifyTextNode(text)) { item.text = text.innerHTML; this.api.onChange(); } });
                 text.addEventListener('keydown', (e) => {
+                    if (handleTagMenuKeydown(e, this.api)) return;
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         if (text.innerText === '') { this.items.splice(index, 1); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); this.rebuild(); } 
@@ -610,9 +725,10 @@
                 const bullet = createEl('div', 'list-bullet', { innerHTML: this.style === 'ordered' ? `${index + 1}.` : '-' });
                 const text = createEl('div', 'native-text-block list-text', { contentEditable: !this.readOnly, innerHTML: item.content || item.text || '' });
                 
-                text.addEventListener('input', () => { item.content = text.innerHTML; this.api.onChange(); });
-                text.addEventListener('blur', () => { if(linkifyTextNode(text)) { item.content = text.innerHTML; this.api.onChange(); } });
+                text.addEventListener('input', (e) => { handleTextInteraction(e, text, this.api, this); item.content = text.innerHTML; this.api.onChange(); });
+                text.addEventListener('blur', () => { setTimeout(() => this.api.hideTagMenu(), 150); if(linkifyTextNode(text)) { item.content = text.innerHTML; this.api.onChange(); } });
                 text.addEventListener('keydown', (e) => {
+                    if (handleTagMenuKeydown(e, this.api)) return;
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         if (text.innerText === '') { this.items.splice(index, 1); this.api.insertBlock('paragraph', {}, this.api.getIndex(this) + 1, true); this.rebuild(); } 
@@ -1135,7 +1251,7 @@
         };
 
         // ============================================================================
-        // CORE BLOCK MANAGER & SLASH MENU ENGINE
+        // CORE BLOCK MANAGER & MENUS (Slash + Tags)
         // ============================================================================
         class BlockManager {
             constructor(containerId, options) {
@@ -1157,13 +1273,23 @@
                     {id: 'recall', icon: ICONS.recall, name: 'Recall Database', keywords: 'search find past query historical'}
                 ];
                 this.slashFiltered = [...this.slashOptions];
+
+                // Tag Menu state
+                this.tagMenuEl = document.getElementById('tag-menu');
+                this.tagActiveBlock = null; 
+                this.tagSelectedIndex = 0;
+                this.tagFiltered = [];
+                this.tagCallback = null;
                 
                 this.container.innerHTML = '';
                 const dataBlocks = options.data?.blocks || [];
                 if (dataBlocks.length === 0 && !this.readOnly) this.insertBlock('paragraph', {}, 0, false); 
                 else dataBlocks.forEach((b, i) => this.insertBlock(b.type, b.data, i, false, b.dynamicInfo));
 
-                document.addEventListener('click', (e) => { if (!this.slashMenuEl.contains(e.target)) this.hideSlashMenu(); });
+                document.addEventListener('click', (e) => { 
+                    if (!this.slashMenuEl.contains(e.target)) this.hideSlashMenu(); 
+                    if (!this.tagMenuEl.contains(e.target)) this.hideTagMenu();
+                });
             }
 
             createBlockAPI(instanceId) {
@@ -1179,11 +1305,20 @@
                     },
                     deleteBlock: (index) => this.deleteBlock(index),
                     focus: (index) => this.focus(index),
+                    
+                    // Slash commands
                     showSlashMenu: (block, rect, query) => this.showSlashMenu(block, rect, query),
                     hideSlashMenu: () => this.hideSlashMenu(),
                     isSlashMenuVisible: () => this.slashMenuEl.classList.contains('active'),
                     slashNavigate: (dir) => this.slashNavigate(dir),
-                    slashExecute: (block) => this.slashExecute(block)
+                    slashExecute: (block) => this.slashExecute(block),
+
+                    // Tag/Persona commands
+                    showTagMenu: (block, rect, query, cb) => this.showTagMenu(block, rect, query, cb),
+                    hideTagMenu: () => this.hideTagMenu(),
+                    isTagMenuVisible: () => this.tagMenuEl.classList.contains('active'),
+                    tagNavigate: (dir) => this.tagNavigate(dir),
+                    tagExecute: () => this.tagExecute(),
                 };
             }
 
@@ -1217,6 +1352,49 @@
                     this.deleteBlock(idx); this.insertBlock(selected.id, {}, idx, true);
                     if (!this.readOnly) this.insertBlock('paragraph', {}, idx + 1, false);
                 }
+            }
+
+            // Tag/Persona Menu Logic
+            showTagMenu(blockInstance, rect, query, cb) {
+                this.tagActiveBlock = blockInstance;
+                this.tagCallback = cb;
+                this.tagMenuEl.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                this.tagMenuEl.style.left = `${Math.max(rect.left, 16)}px`;
+                
+                const allTags = getAllTags();
+                this.tagFiltered = allTags.filter(t => t.toLowerCase().includes(query.toLowerCase()) && t !== query);
+                
+                if (this.tagFiltered.length === 0) { this.hideTagMenu(); return; }
+                
+                this.tagSelectedIndex = 0; 
+                this.renderTagMenu(); 
+                this.tagMenuEl.classList.add('active');
+            }
+
+            hideTagMenu() { this.tagMenuEl.classList.remove('active'); this.tagActiveBlock = null; this.tagCallback = null; }
+            
+            renderTagMenu() {
+                this.tagMenuEl.innerHTML = '';
+                this.tagFiltered.forEach((opt, idx) => {
+                    const item = createEl('div', `slash-item ${idx === this.tagSelectedIndex ? 'selected' : ''}`, {}, [
+                        createEl('span', '', {textContent: opt, style: 'font-family: monospace; letter-spacing: 1px;'})
+                    ]);
+                    item.onmousedown = (e) => { e.preventDefault(); this.tagSelectedIndex = idx; this.tagExecute(); };
+                    this.tagMenuEl.appendChild(item);
+                });
+            }
+
+            tagNavigate(dir) {
+                this.tagSelectedIndex = (this.tagSelectedIndex + dir + this.tagFiltered.length) % this.tagFiltered.length;
+                this.renderTagMenu(); const selectedEl = this.tagMenuEl.children[this.tagSelectedIndex];
+                if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
+            }
+
+            tagExecute() {
+                const selected = this.tagFiltered[this.tagSelectedIndex]; 
+                const cb = this.tagCallback;
+                this.hideTagMenu();
+                if (selected && cb) cb(selected);
             }
 
             insertBlock(type, data, index = this.blocks.length, focus = true, dynamicInfo = null) {
@@ -1269,7 +1447,7 @@
                 return { blocks: output };
             }
             
-            destroy() { this.hideSlashMenu(); this.blocks.forEach(b => { if (typeof b.instance.destroy === 'function') b.instance.destroy(); }); this.container.innerHTML = ''; this.blocks = []; }
+            destroy() { this.hideSlashMenu(); this.hideTagMenu(); this.blocks.forEach(b => { if (typeof b.instance.destroy === 'function') b.instance.destroy(); }); this.container.innerHTML = ''; this.blocks = []; }
         }
 
         // ============================================================================
