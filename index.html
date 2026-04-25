@@ -38,7 +38,9 @@
         
         ::-webkit-scrollbar { display: none; }
         ::selection { background: var(--text-color) !important; color: var(--bg-color); }
-        svg { flex-shrink: 0; width: 18px; height: 18px; }
+        
+        /* FIX: Exclude Leaflet SVGs from being forced to 18px, otherwise drawing lines disappear */
+        svg:not(.leaflet-container svg) { flex-shrink: 0; width: 18px; height: 18px; }
 
         /* --- STYLISH BRUTALIST HEADER --- */
         #date-header { 
@@ -633,7 +635,6 @@
         // COMPLEX WIDGET TOOLS (ISOLATED IN / MENU)
         // ============================================================================
 
-        // Base class handling boilerplate for wrapper, header, and delete logic
         class BaseWidgetTool {
             constructor({data, api, readOnly}) {
                 this.api = api; this.readOnly = readOnly;
