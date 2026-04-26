@@ -171,9 +171,8 @@
             <span id="storage-warning" class="storage-warning">LOCAL IDB ONLY</span>
             <span id="save-indicator" class="save-indicator">SYNCED</span>
             <span id="ai-status" class="save-indicator visible">ENGINE STARTING...</span>
-            <span style="flex-grow: 1"></span>
-            <a class="v-link persona-link" data-target="tag-models" style="margin-right: 8px; background: #2563eb;">MODELS</a>
-            <a class="v-link persona-link" data-target="tag-personas">PERSONAS</a>
+            <span class="v-link save-indicator visible" data-target="tag-models" style="color: var(--text-color); cursor: pointer; margin-left: auto;">MODELS</span>
+            <span class="v-link save-indicator visible" data-target="tag-personas" style="color: var(--text-color); cursor: pointer;">PERSONAS</span>
         </div>
         
         <div id="editor-container"></div>
@@ -310,6 +309,10 @@
             activePersona: null,
             modelId: localStorage.getItem('selected_llm') || "Llama-3.2-1B-Instruct-q4f32_1-MLC",
             
+            // Memory Management Limits
+            historyLimit: parseInt(localStorage.getItem('llm_history_limit')) || 5,
+            contextBlockLimit: parseInt(localStorage.getItem('llm_context_limit')) || 15,
+            
             loadModel: async function() {
                 const statusEl = document.getElementById('model-status');
                 const progressEl = document.getElementById('model-progress');
@@ -344,13 +347,20 @@
                 
                 let systemPrompt = `You are ${personaTag.toUpperCase()}. Respond concisely to the user in the context of your knowledge below. Format nicely in markdown if needed. Do not hallucinate capabilities. Embody this persona completely.\n\nContext about you:\n`;
                 
+                // Collect background knowledge and enforce limits to save memory
+                let contextBlocks = [];
                 const basePageStr = `tag-${personaTag.toLowerCase()}`;
                 if (appDB.cache[basePageStr] && appDB.cache[basePageStr].blocks) {
-                    systemPrompt += appDB.cache[basePageStr].blocks.map(b => extractBlockText(b)).join('\n');
+                    contextBlocks.push(...appDB.cache[basePageStr].blocks.map(b => extractBlockText(b)));
                 }
                 
                 const mentions = TagIndex.getMentionsForRoot(personaTag);
-                mentions.forEach(m => { systemPrompt += `\n- ` + extractBlockText(m.block); });
+                mentions.forEach(m => { contextBlocks.push(extractBlockText(m.block)); });
+
+                if (contextBlocks.length > this.contextBlockLimit) {
+                    contextBlocks = contextBlocks.slice(0, this.contextBlockLimit);
+                }
+                systemPrompt += contextBlocks.map(t => `- ${t}`).join('\n');
 
                 this.chatContext = [
                     { role: "system", content: systemPrompt },
@@ -370,9 +380,18 @@
                 const replyBlock = blockApi.insertBlock('paragraph', { text: `<b>${this.activePersona.toUpperCase()}:</b> ` }, count, false);
                 replyBlock.instance.el.contentEditable = "false"; 
                 
+                // Trim chat context array to respect the history limit setting
+                let effectiveContext = this.chatContext;
+                if (this.historyLimit < 999 && this.chatContext.length > 2) {
+                    const systemMsg = this.chatContext[0];
+                    // Keep the last N interactions (approx * 2 for user+assistant pairs)
+                    const recentMsgs = this.chatContext.slice(-(this.historyLimit * 2 - 1)); 
+                    effectiveContext = [systemMsg, ...recentMsgs];
+                }
+
                 try {
                     const chunks = await this.engine.chat.completions.create({
-                        messages: this.chatContext,
+                        messages: effectiveContext,
                         stream: true
                     });
 
@@ -1626,21 +1645,51 @@
         // ============================================================================
         function renderModelsIndex() {
             const container = document.getElementById('editor-container'); container.innerHTML = '';
+            
             const header = createEl('div', '', { style: 'margin-bottom: 24px;' });
             header.innerHTML = `
                 <div style="font-size: 2em; font-weight: 900; text-transform: uppercase;">AI Models</div>
                 <div style="color: var(--muted-text); font-weight: bold; font-size: 12px; margin-bottom: 16px;">ON-DEVICE INFERENCE ENGINE</div>
-                <div id="model-status" style="font-weight: bold; background: var(--muted-bg); padding: 8px; border-left: 4px solid var(--text-color);">STATUS: AWAITING SELECTION</div>
+                <div id="model-status" style="font-weight: bold; background: var(--muted-bg); padding: 8px; border-left: 4px solid var(--text-color);">STATUS: ${LocalAIEngine.engine ? 'READY (ACTIVE)' : 'AWAITING SELECTION'}</div>
                 <div id="model-progress" style="height: 4px; background: var(--border-color); margin-top: 8px; display: none;">
                     <div id="model-progress-bar" style="height: 100%; width: 0%; background: var(--text-color); transition: width 0.1s;"></div>
                 </div>
             `;
-            const grid = createEl('div', '', { style: 'display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-top: 24px;' });
+            
+            const settingsBox = createEl('div', 'tool-box', { style: 'padding: 16px; margin-bottom: 24px;' });
+            settingsBox.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 16px; font-size: 12px; letter-spacing: 1px;">MEMORY & CONTEXT LIMITS</div>
+                <div class="flat-row" style="margin-bottom: 12px;">
+                    <div style="flex: 1; font-size: 12px; color: var(--muted-text); font-weight: bold;">CHAT HISTORY (TURNS)</div>
+                    <select id="ai-history-select" class="flat-input" style="width: auto; background: var(--muted-bg); padding: 4px 8px; font-weight: bold;">
+                        <option value="2">2 (Lowest Memory)</option>
+                        <option value="5">5 (Balanced)</option>
+                        <option value="10">10 (High Memory)</option>
+                        <option value="999">Infinite</option>
+                    </select>
+                </div>
+                <div class="flat-row">
+                    <div style="flex: 1; font-size: 12px; color: var(--muted-text); font-weight: bold;">KNOWLEDGE INJECTION (BLOCKS)</div>
+                    <select id="ai-context-select" class="flat-input" style="width: auto; background: var(--muted-bg); padding: 4px 8px; font-weight: bold;">
+                        <option value="5">5 Blocks (Fastest)</option>
+                        <option value="15">15 Blocks (Standard)</option>
+                        <option value="50">50 Blocks (Deep Memory)</option>
+                    </select>
+                </div>
+            `;
+            
+            const gridTitle = createEl('div', '', { style: 'font-weight: bold; font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; margin-top: 24px;' });
+            gridTitle.textContent = "SELECT A MODEL TO DOWNLOAD/ACTIVATE:";
+
+            const grid = createEl('div', '', { style: 'display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;' });
             
             const models = [
-                { id: "Llama-3.2-1B-Instruct-q4f32_1-MLC", name: "Llama 3.2 (1B)", desc: "Fastest. Excellent for low-end hardware and quick chats." },
-                { id: "Llama-3.2-3B-Instruct-q4f32_1-MLC", name: "Llama 3.2 (3B)", desc: "Balanced memory usage and reasoning capabilities." },
-                { id: "Phi-3.5-mini-instruct-q4f16_1-MLC", name: "Phi 3.5 Mini", desc: "Strong logic and coding abilities packed in a small size." },
+                { id: "SmolLM2-360M-Instruct-q4f16_1-MLC", name: "SmolLM2 (360M)", desc: "Ultra-tiny model. Very low memory footprint. Good for simple tasks." },
+                { id: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", name: "Qwen 2.5 (0.5B)", desc: "Extremely fast and lightweight. Recommended for mobile." },
+                { id: "TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC", name: "TinyLlama (1.1B)", desc: "Classic lightweight model. Good conversational baseline." },
+                { id: "Llama-3.2-1B-Instruct-q4f32_1-MLC", name: "Llama 3.2 (1B)", desc: "Fastest general model. Excellent balance of speed and capability." },
+                { id: "Llama-3.2-3B-Instruct-q4f32_1-MLC", name: "Llama 3.2 (3B)", desc: "Strong reasoning capabilities. Requires higher RAM/VRAM." },
+                { id: "Phi-3.5-mini-instruct-q4f16_1-MLC", name: "Phi 3.5 Mini", desc: "Strong logic abilities packed in a small size." },
                 { id: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", name: "Qwen 2.5 (1.5B)", desc: "Excellent multilingual capabilities and highly efficient." }
             ];
 
@@ -1657,12 +1706,24 @@
                 `;
                 btn.onclick = () => {
                     LocalAIEngine.modelId = m.id; localStorage.setItem('selected_llm', m.id);
-                    renderModelsIndex(); // Refresh active styles
+                    renderModelsIndex(); 
                     LocalAIEngine.loadModel();
                 };
                 grid.appendChild(btn);
             });
-            container.append(header, grid);
+            
+            container.append(header, settingsBox, gridTitle, grid);
+
+            // Bind setting inputs
+            setTimeout(() => {
+                const histSel = document.getElementById('ai-history-select');
+                histSel.value = LocalAIEngine.historyLimit.toString();
+                histSel.onchange = (e) => { LocalAIEngine.historyLimit = parseInt(e.target.value); localStorage.setItem('llm_history_limit', e.target.value); };
+
+                const ctxSel = document.getElementById('ai-context-select');
+                ctxSel.value = LocalAIEngine.contextBlockLimit.toString();
+                ctxSel.onchange = (e) => { LocalAIEngine.contextBlockLimit = parseInt(e.target.value); localStorage.setItem('llm_context_limit', e.target.value); };
+            }, 0);
         }
 
         function renderPersonasIndex() {
